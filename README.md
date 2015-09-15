@@ -1,6 +1,8 @@
 # jSimpleSpreadsheet
 
-Simple, easy and uncomplicated. Your HTML tables are navigable and editable.
+Simple, easy and uncomplicated. Your HTML tables are navigable and editable (like a spreadsheet).
+
+Simples, fácil e descomplicado. Suas tabelas HTML são navegáveis e editáveis (como uma planilha).
 
 ## Simple usage:
 ```
