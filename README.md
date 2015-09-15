@@ -32,9 +32,11 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
 
 ## Releases:
 
-* 1.1 - Theme support;
+* v1.1 
+      - Theme support;
       - Removed 'change' option;
       - Added 'selected' option;
       - Added wrapper functions 'jSimpleSpreadsheet_';
-      - Fix 'undo' in 'onBlur' false 
-* 1.0 - First release. 
+      - Fix 'undo' in 'onBlur' return false 
+* v1.0 
+      - First release. 
