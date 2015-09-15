@@ -1,0 +1,19 @@
+table.jSimpleSpreadsheet-runner, table.jSimpleSpreadsheet-runner input {
+    border-collapse: collapse;
+    font-family: Calibri, Arial, Helvetica, sans-serif;
+    font-size: 15pt
+}
+table.jSimpleSpreadsheet-runner, table.jSimpleSpreadsheet-runner td, table.jSimpleSpreadsheet-runner th{
+    border: 1px solid silver;
+}
+table.jSimpleSpreadsheet-runner th:first-child {
+    width: 2em;
+}
+table.jSimpleSpreadsheet-runner th{
+    background-color: #dedede;
+}
+table.jSimpleSpreadsheet-runner input {
+    border: 0;
+}
+table.jSimpleSpreadsheet-runner .numero, table.jSimpleSpreadsheet-runner .numero input[type="text"] {text-align:right}
+table.jSimpleSpreadsheet-runner{cursor:default;}       

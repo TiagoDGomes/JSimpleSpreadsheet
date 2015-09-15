@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html>  
+    <head>  
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">  
+        <title>Planilha básica usando jQuery</title> 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> 
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+		<link rel="stylesheet" type="text/css" href="jquery.jsimplespreadsheet.css">
+    	<link rel="stylesheet" type="text/css" href="jquery.jsimplespreadsheet.theme.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+		<script src="jquery.jsimplespreadsheet.js"></script> 
+        
+        <script type="text/javascript">
+            $(document).ready(function() {                
+				$('.planilha').jSimpleSpreadsheet({					
+					onFocus: function(colName, rowIndex, valueRaw){
+						
+					},
+					onBlur: function(colName, rowIndex, valueRaw){
+						
+						return true;
+					}
+										
+				});
+            });   
+            
+           
+        </script> 
+        
+
+    </head>  
+    <body>       
+        <h1>jSimpleSpreadsheet Example</h1>
+        <table class="planilha">                    
+            <tbody>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>A</th>
+                    <th>B</th>
+                    <th>C</th>
+                </tr>
+                <tr>                                                         
+                    <th>                                
+                        1                           
+                    </th>                            
+                    <td data-disabled>                                                                    
+                        Test disable
+                    </td>                            
+                    <td>                                                                    
+                        2  
+                    </td>                            
+                    <td>                                                                    
+                        
+                    </td>                        
+                </tr>                                            
+                <tr>                                                         
+                    <th>                                
+                        2                           
+                    </th>                            
+                    <td>                                                                    
+                        This is A2
+                    </td>                            
+                    <td>                                                                    
+                        3  
+                    </td>                            
+                    <td>                                                                    
+                        
+                    </td>                     
+                </tr>                                            
+                <tr>                                                         
+                    <th>                                
+                        3                           
+                    </th>                            
+                    <td data-disabled>                                                                    
+                        This is A3 disabled
+                    </td>                            
+                    <td>                                                                    
+                        5  
+                    </td>                            
+                    <td>                                                                    
+                        
+                    </td>                       
+                </tr>                                            
+                <tr>                                                         
+                    <th>                                
+                        4                           
+                    </th>                            
+                    <td data-disabled>                                                                    
+                        Nope!
+                    </td>                            
+                    <td>                                                                    
+                        7  
+                    </td>                            
+                    <td>                                                                    
+                        
+                    </td>                     
+                </tr>                                            
+                <tr>                                                         
+                    <th>                                
+                        5                           
+                    </th>                            
+                    <td>                                                                    
+                        banana
+                    </td>                            
+                    <td>                                                                    
+                        x
+                    </td>                            
+                    <td>                                                                    
+                        Tiago
+                    </td>                        
+                </tr>                                        
+                <tr>                                                                                                                  
+                    <th>                                
+                        6                           
+                    </th>                            
+                    <td>                                                                    
+                        
+                    </td>                            
+                    <td data-disabled>                                                                    
+                        disabled
+                    </td>                            
+                    <td>                                                                    
+                        This is C6
+                    </td>                      
+                </tr>  
+            </tbody>
+        </table> 
+        <p>
+        <h2>Test!</h2>
+        <textarea id="code" rows="15" cols="100">
+        // Example (click 'Execute')
+        
+        var contentA5 = $('.planilha').jSimpleSpreadsheet('cell','A5');      // get A5  
+        $('.planilha').jSimpleSpreadsheet('cell','B1', 'foo');               // writing 
+        $('.planilha').jSimpleSpreadsheet('cell','B6', 'writing in B6');     // writing   
+        $('.planilha').jSimpleSpreadsheet('cell','A2', null);                // set null
+        $('.planilha').jSimpleSpreadsheet('enableCell','B6', true);          // enabling B6 
+        $('.planilha').jSimpleSpreadsheet('enableCell','c6', false);         // disabling C6
+        $('.planilha').jSimpleSpreadsheet('enableCell','A3', false, false);  // force A3 disable
+        
+        alert(contentA5);
+        
+        </textarea>
+        </p>
+        <p>
+        <button onclick="try{eval($('#code').val());}catch(err){alert('Hey!\n' + err)}">Execute</button>        
+        </p>
+        
+        <p>
+        <address>Copyleft 2015 Tiago Donizett Gomes (<a href="https://github.com/TiagoDGomes/jSimpleSpreadsheet">https://github.com/TiagoDGomes/jSimpleSpreadsheet</a>)</address>
+        </p>
+        
+    </body>
+</html>
