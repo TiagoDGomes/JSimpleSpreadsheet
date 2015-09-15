@@ -34,6 +34,9 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
 
 
 ## Releases:
+* v1.1.3
+      - Bugfix: 'undo' 'onBlur' saving data-value
+      - Removed <code> console.log() </code>     
 * v1.1.2
       - <code> $(this).html </code> -> <code> this.innerHTML </code>
       - Bugfix: 'disabled span' as text (not HTML)       

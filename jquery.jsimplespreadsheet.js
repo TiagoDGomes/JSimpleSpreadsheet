@@ -1,5 +1,5 @@
 /**
- * jSimpleSpreadsheet 1.1.2
+ * jSimpleSpreadsheet 1.1.3
  * @author Tiago Donizetti Gomes (https://github.com/TiagoDGomes/jSimpleSpreadsheet)
  *  
  * This program is free software: you can redistribute it and/or modify
@@ -47,14 +47,12 @@ if (typeof KeyEvent == "undefined") {
     }
 
 (function ( $ ) {      
-    $.widget( "tdg.jSimpleSpreadsheet", {
-        
+    $.widget( "tdg.jSimpleSpreadsheet", {        
         options: {
             onFocus: function(colName, rowIndex, valueRaw){
-                console.log(colName + rowIndex + ' focus! value: ' + valueRaw);
+                // nothing
             },
             onBlur: function(colName, rowIndex, valueRaw){
-                console.log(colName + rowIndex + ' blur! value: ' + valueRaw);
                 return true;
             },
             theme: null,
@@ -150,10 +148,11 @@ if (typeof KeyEvent == "undefined") {
                 var valueRaw = this.value;
                 var selectorTextSpan = jSimpleSpreadSheet_getCellSpanSelector(widget._jSmpSprshtTableSelector, colName + rowIndex);
                 $(this).removeClass('focus');
-                $(selectorTextSpan).text(valueRaw);
                 var ret = widget.options.onBlur(colName, rowIndex, valueRaw);
                 if (ret == false){
                     jSimpleSpreadSheet_restoreDataValue(widget._jSmpSprshtTableSelector, colName + rowIndex);
+                } else {
+                    jSimpleSpreadSheet_cellValue(widget._jSmpSprshtTableSelector, colName + rowIndex, this.value);
                 }     
                 
             });    
