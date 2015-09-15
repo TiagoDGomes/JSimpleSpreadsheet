@@ -1,5 +1,5 @@
 /**
- * jSimpleSpreadsheet 1.1.1
+ * jSimpleSpreadsheet 1.1.2
  * @author Tiago Donizetti Gomes (https://github.com/TiagoDGomes/jSimpleSpreadsheet)
  *  
  * This program is free software: you can redistribute it and/or modify
@@ -104,7 +104,7 @@ if (typeof KeyEvent == "undefined") {
                         inputStyle = 'display: none';
                         textStyle = '';
                     }
-                    $(this).html('<input type="text' + 
+                    this.innerHTML = ('<input type="text' + 
                                       '" name="' + colName + rowIndex + '_' + colName + '_' + rowIndex +
                                       '" class="value" style="' + inputStyle + 
                                       '" data-cell-name="' + colName + rowIndex + 
@@ -133,7 +133,7 @@ if (typeof KeyEvent == "undefined") {
             $(widget._jSmpSprshtTableSelector + " input").focus(function() {
                 var colName = $(this).data('col-name');
                 var rowIndex = $(this).data('row');
-                var valueRaw = $(this).val();
+                var valueRaw = this.value;
                 $(this).addClass('focus');
                 widget.options.onFocus(colName, rowIndex, valueRaw);
                 widget._selected = this;                             
@@ -147,10 +147,10 @@ if (typeof KeyEvent == "undefined") {
             $(widget._jSmpSprshtTableSelector + " input").blur(function() {
                 var colName = $(this).data('col-name');
                 var rowIndex = $(this).data('row');
-                var valueRaw = $(this).val();
-                var selector_disabled = jSimpleSpreadSheet_getCellSpanSelector(widget._jSmpSprshtTableSelector, colName + rowIndex);
+                var valueRaw = this.value;
+                var selectorTextSpan = jSimpleSpreadSheet_getCellSpanSelector(widget._jSmpSprshtTableSelector, colName + rowIndex);
                 $(this).removeClass('focus');
-                $(selector_disabled).html(valueRaw);
+                $(selectorTextSpan).text(valueRaw);
                 var ret = widget.options.onBlur(colName, rowIndex, valueRaw);
                 if (ret == false){
                     jSimpleSpreadSheet_restoreDataValue(widget._jSmpSprshtTableSelector, colName + rowIndex);
@@ -259,7 +259,7 @@ function jSimpleSpreadSheet_cellValue(tableSelector, cellName, cellValue){
         $(selectorTextInput).val(cellValue);
         $(selectorTextInput).data('value', cellValue);
     }
-    $(selectorTextSpan).html($(selectorTextInput).val());
+    $(selectorTextSpan).text($(selectorTextInput).val());
     return $(selectorTextInput).val(); 
 }
 function jSimpleSpreadSheet_restoreDataValue(tableSelector, cellName){
@@ -267,7 +267,7 @@ function jSimpleSpreadSheet_restoreDataValue(tableSelector, cellName){
     var selectorTextSpan  = jSimpleSpreadSheet_getCellSpanSelector(tableSelector, cellName);
     var dataValue = $(selectorTextInput).data('value');
     $(selectorTextInput).val(dataValue);
-    $(selectorTextSpan).html(dataValue);
+    $(selectorTextSpan).text(dataValue);
     return $(selectorTextInput).val(); 
 }
 
