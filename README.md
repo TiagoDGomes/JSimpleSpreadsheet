@@ -14,11 +14,11 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
 
 ```
  $(your_table_selector).jSimpleSpreadsheet({					
-	onFocus: function(colName, rowIndex, valueRaw){
+        onFocus: function(colName, rowIndex, valueRaw){
             // Example - onFocus:
             alert('This is ' + colName + rowIndex + ' with focus!');
         },
-	onBlur: function(colName, rowIndex, valueRaw){						
+        onBlur: function(colName, rowIndex, valueRaw){						
             // Example - onBlur:
             if (confirm('Accept ' + colName + rowIndex + ' with ' + valueRaw + '?')){
                 return true;
