@@ -34,7 +34,8 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
 
 
 ## Releases:
-
+* v1.1.1
+      - Bugfix: table selector
 * v1.1 
       - Theme support;
       - Removed 'change' option;

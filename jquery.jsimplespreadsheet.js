@@ -1,5 +1,5 @@
 /**
- * jSimpleSpreadsheet 1.1
+ * jSimpleSpreadsheet 1.1.1
  * @author Tiago Donizetti Gomes (https://github.com/TiagoDGomes/jSimpleSpreadsheet)
  *  
  * This program is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ if (typeof KeyEvent == "undefined") {
             widget._jSmpSprshtTableSelector = 'jSimpleSpreadsheet-runner-' + this.options.id;
             $(widget.element).addClass(widget._jSmpSprshtTableSelector);
             $(widget.element).addClass('jSimpleSpreadsheet-runner');
-            widget._jSmpSprshtTableSelector = 'table.' + widget._jSmpSprshtTableSelector;
+            widget._jSmpSprshtTableSelector = '.' + widget._jSmpSprshtTableSelector;
             
             if (widget.options.theme !== null){
                   link = document.createElement( "link" );
