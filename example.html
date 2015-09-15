@@ -40,10 +40,11 @@ $('.my-spreadsheet').jSimpleSpreadsheet({
 var contentA5 = $('.my-spreadsheet').jSimpleSpreadsheet('cell','A5');      // get A5  
 $('.my-spreadsheet').jSimpleSpreadsheet('cell','B1', 'foo');               // writing 
 $('.my-spreadsheet').jSimpleSpreadsheet('cell','B6', 'writing in B6');     // writing   
+$('.my-spreadsheet').jSimpleSpreadsheet('cell','C3', '<b>I am stubborn... oops!</b>');     // writing   
 $('.my-spreadsheet').jSimpleSpreadsheet('cell','A2', null);                // set null
 $('.my-spreadsheet').jSimpleSpreadsheet('enableCell','B6', true);          // enabling B6 
 $('.my-spreadsheet').jSimpleSpreadsheet('enableCell','c6', false);         // disabling C6
-$('.my-spreadsheet').jSimpleSpreadsheet('enableCell','A2', false, false);  // force A3 disable
+$('.my-spreadsheet').jSimpleSpreadsheet('enableCell','A4', false, false);  // force A4 disable
 var selected = $('.my-spreadsheet').jSimpleSpreadsheet('selected');        // selected
 
         
@@ -66,7 +67,7 @@ alert('Selected: ' + $(selected).data('cell-name'));
                     <th>2</th><td>My A2 cell</td><td>3</td><td>Tunico</td>                       
                 </tr>                                            
                 <tr>                                                         
-                    <th>3</th><td data-disabled>This is A3 disabled in HTML</td><td>5</td><td>&nbsp;</td>                         
+                    <th>3</th><td data-disabled>This is A3 disabled in HTML</td><td>5</td><td><strong>Don't use HTML code here</strong></td>                         
                 </tr>                                            
                 <tr>                                                         
                     <th>4</th><td data-disabled>Nope!</td><td>7</td><td>&nbsp;</td>                     
