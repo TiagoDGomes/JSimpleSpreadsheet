@@ -22,17 +22,20 @@
         <textarea id="code" rows="20" cols="100">
 // Example (click 'Execute')
 $('.my-spreadsheet').jSimpleSpreadsheet({					
-    onFocus: function(colName, rowIndex, valueRaw){
-						
-    },
-    onBlur: function(colName, rowIndex, valueRaw){						
-        if (confirm('Accept ' + colName + rowIndex + ' with ' + valueRaw + '?')){
-            return true;
-        } else {
-            return false;
-        }
-    },
-    theme: 'jquery.jsimplespreadsheet.theme.css' 					
+        onFocus: function(colName, rowIndex, valueRaw){
+            //// Example - onFocus:
+            // alert('This is ' + colName + rowIndex + ' with focus!');
+        },
+        onBlur: function(colName, rowIndex, valueRaw){						
+            //// Example - onBlur:
+            // if (confirm('Accept ' + colName + rowIndex + ' with ' + valueRaw + '?')){
+            //    return true;
+            // } else {
+            //    return false;  // Undo changes
+            // }
+            //
+        },
+        theme: 'jquery.jsimplespreadsheet.theme.css' 
 });
 var contentA5 = $('.my-spreadsheet').jSimpleSpreadsheet('cell','A5');      // get A5  
 $('.my-spreadsheet').jSimpleSpreadsheet('cell','B1', 'foo');               // writing 
