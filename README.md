@@ -9,10 +9,12 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
 
 ```javascript
 var your_table_selector = '.this-is-a-example';
+
 $(your_table_selector).jSimpleSpreadsheet();
+
 ```
 
-## Full usage:
+## Full usage examples:
 
 ```javascript
 var your_table_selector = '.this-is-a-example';
