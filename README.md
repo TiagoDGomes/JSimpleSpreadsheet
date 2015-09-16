@@ -10,6 +10,14 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
 ```javascript
 var your_table_selector = '.this-is-a-example';
 
+var worksheet = new JSimpleSpreadsheet(your_table_selector);
+
+```
+or
+
+```javascript
+var your_table_selector = '.this-is-a-example';
+
 $(your_table_selector).jSimpleSpreadsheet();
 
 ```
