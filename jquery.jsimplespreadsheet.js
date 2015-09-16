@@ -1,5 +1,5 @@
 /**
- * jSimpleSpreadsheet 2.0
+ * jSimpleSpreadsheet 2.0.1
  * @author Tiago Donizetti Gomes (https://github.com/TiagoDGomes/jSimpleSpreadsheet)
  *  
  * This program is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 var JSS_CELL_SELECTOR_PREFFIX = 'cell_';   
 
-if (typeof KeyEvent == "undefined") {
+if (typeof KeyEvent === "undefined") {
         var KeyEvent = {
             DOM_VK_CANCEL: 3,
             DOM_VK_BACK_SPACE: 8,
@@ -42,7 +42,7 @@ if (typeof KeyEvent == "undefined") {
             DOM_VK_RIGHT: 39,
             DOM_VK_DOWN: 40,
             DOM_VK_INSERT: 45,
-            DOM_VK_DELETE: 46,
+            DOM_VK_DELETE: 46
             
         };
     }
@@ -192,10 +192,8 @@ if (typeof KeyEvent == "undefined") {
                 var colName = $(this).data('colname');
                 var rowIndex = $(this).data('row');
                 var oldValueRaw = $(this).data('value');
-                console.log('change');
-                var selectorTextSpan = jss_getCellSpanSelector(widget._jssTableSelector, colName + rowIndex);
                 var ret = widget.options.onBlur(colName, rowIndex, this.value, oldValueRaw, this);
-                if (ret == false){
+                if (ret === false){
                     jss_restoreDataValue(widget._jssTableSelector, colName + rowIndex);
                 } else { 
                     _jss_cellValue(widget, colName + rowIndex, this.value);
@@ -210,13 +208,8 @@ if (typeof KeyEvent == "undefined") {
             $(widget._jssTableSelector + " input").blur(function() {
                 var colName = $(this).data('colname');
                 var rowIndex = $(this).data('row');
-                var valueRaw = this.value;
-                var oldValueRaw = $(this).data('value');
-                console.log('blur');
-                var selectorTextSpan = jss_getCellSpanSelector(widget._jssTableSelector, colName + rowIndex);
                 $(this).removeClass('focus');
-                widget.options.onBlur(colName, rowIndex, this);
-                     
+                widget.options.onBlur(colName, rowIndex, this);                     
                 
             });    
             
@@ -227,7 +220,6 @@ if (typeof KeyEvent == "undefined") {
              */
             
             $(widget._jssTableSelector + ' input').keydown(function(event) {
-                var next;
                 var colIndex = $(this).data('col');
                 var rowIndex = $(this).data('row');
                         
@@ -246,15 +238,13 @@ if (typeof KeyEvent == "undefined") {
                     case KeyEvent.DOM_VK_RIGHT:
                         if (this.value.length === _jss_getPosition(this)) {
                             event.preventDefault();
-                            jss_moveTo(widget._jssTableSelector, null, colIndex + 1, rowIndex);
-                            
+                            jss_moveTo(widget._jssTableSelector, null, colIndex + 1, rowIndex);                            
                         }
                         break;
                     case KeyEvent.DOM_VK_LEFT:
                         if (_jss_getPosition(this) === 0) {
                             event.preventDefault();
-                            jss_moveTo(widget._jssTableSelector, null, colIndex - 1, rowIndex);
-                            
+                            jss_moveTo(widget._jssTableSelector, null, colIndex - 1, rowIndex);                            
                         }
                         break;
                 }
@@ -280,6 +270,7 @@ function _jss_rnd (){
  * Return value range is 0-oField.value.length.
  * Original method: doGetCaretPosition
  * https://stackoverflow.com/questions/2897155/get-cursor-position-in-characters-within-a-text-input-field
+ * @param {obj} oField
 */
 function _jss_getPosition(oField) {
        // Initialize
@@ -341,7 +332,7 @@ function jss_enableCell(tableSelector, cellName, enable, dontForce){
             $(selectorTextInput).data('disabled', undefined);
             $(selectorTextSpan).hide();                
         } else {
-            if (dontForce===undefined||dontForce==true){
+            if (dontForce === undefined || dontForce === true){
                 $(selectorTextInput).hide();
                 $(selectorTextSpan).show();
             } else{
@@ -360,9 +351,9 @@ function jss_enableCell(tableSelector, cellName, enable, dontForce){
 function jss_moveTo(tableSelector, cellname, col, row){
     var next;
     if (cellname !== null){
-      next = $(tableSelector + ' input.' + JSS_CELL_SELECTOR_PREFFIX + cellname);
+        next = $(tableSelector + ' input.' + JSS_CELL_SELECTOR_PREFFIX + cellname);
     } else {
-      next = $(tableSelector + ' input.' + JSS_CELL_SELECTOR_PREFFIX + col + '_' + row);
+        next = $(tableSelector + ' input.' + JSS_CELL_SELECTOR_PREFFIX + col + '_' + row);
     }        
     next.focus();
 } 

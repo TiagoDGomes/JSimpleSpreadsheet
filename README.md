@@ -40,6 +40,8 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
 
 
 ## Releases:
+* v2.0.1
+      - Minimal changes
 * v2.0
       - Add full 'undo' support (<code>$(your_table_selector).jSimpleSpreadsheet('undo')</code> )
       - Clean code
