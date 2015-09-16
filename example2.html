@@ -11,9 +11,7 @@
         <link rel="stylesheet" type="text/css" href="jquery.jsimplespreadsheet.css">
         <script src="jquery.jsimplespreadsheet.js"></script>
         <script>
-            $(document).ready(function() {
-
-            });
+            var worksheet;
         </script>
 
 
@@ -25,7 +23,7 @@
         <h2>Test!</h2>
         <textarea id="code" rows="20" cols="100">
 // Example (click 'Execute')
-var worksheet = new JSimpleSpreadsheet('.my-spreadsheet', {					
+worksheet = new JSimpleSpreadsheet('.my-spreadsheet', {					
     onFocus: function(colName, rowIndex, valueRaw){
         //// Example - onFocus:
         // alert('This is ' + colName + rowIndex + ' with focus!');
@@ -53,17 +51,9 @@ worksheet.getCell(['C1','A2']).setEnabled(false);
         </textarea>
 
         <p>
-            <button onclick="try {
-                        eval($('#code').val());
-                    } catch (err) {
-                        alert('Hey!\n' + err)
-                    }">Execute</button>        
+            <button onclick="try {eval($('#code').val());} catch (err) {alert('Hey!\n' + err)}">Execute</button>        
             <button onclick="eval($('#code').val());">Execute (debug console)</button>        
-            <button onclick="if (!$('.my-spreadsheet').jSimpleSpreadsheet('undo')) {
-                        alert('Finished')
-                    }
-                    ;
-                    ">undo</button>        
+            <button onclick="if (!worksheet.undo()) {alert('Finished')};">undo</button>        
         </p>
         <table border="1" class="my-spreadsheet">                    
             <tbody>

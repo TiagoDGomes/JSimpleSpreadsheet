@@ -52,6 +52,9 @@ $(your_table_selector).jSimpleSpreadsheet('enableCell','B6', true);          // 
 $(your_table_selector).jSimpleSpreadsheet('enableCell','c6', false);         // disabling C6
 $(your_table_selector).jSimpleSpreadsheet('enableCell','A4', false, false);  // force A4 disable
 
+$(your_table_selector).jSimpleSpreadsheet('cell','B5', 'Undo test'); 
+$(your_table_selector).jSimpleSpreadsheet('undo');  // Undo B5
+
 var selected = $(your_table_selector).jSimpleSpreadsheet('selected');        // selected
 
 alert(contentA5);
@@ -91,10 +94,15 @@ console.log(worksheet.getCell('A1').getValue());
 console.log(worksheet.getCell(['A1','C3']).getValue());      // Return only first element value
 worksheet.getCell(['C1','A2']).setEnabled(false);
 
+worksheet.getCell('B5').setValue('Undo test');
+worksheet.undo();  // Undo B5
+
 ```
 
 ## Releases:
 
+* v2.1.1
+      - Add 'undo' in JSimpleSpreadsheet object
 * v2.1
       - JSimpleSpreadsheet object
 * v2.0.1

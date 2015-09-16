@@ -1,5 +1,5 @@
 /**
- * jSimpleSpreadsheet 2.0.1
+ * jSimpleSpreadsheet 2.1.1
  * @author Tiago Donizetti Gomes (https://github.com/TiagoDGomes/jSimpleSpreadsheet)
  *  
  * This program is free software: you can redistribute it and/or modify
@@ -396,6 +396,9 @@ var JSimpleSpreadsheet = function(selector, options){
     this.getCell = function(cellName){
         return new JSimpleSpreadsheetCell(widget, cellName);              
     };
+    this.undo = function(){
+        return $(selector).jSimpleSpreadsheet('undo');
+    }
 };
 
 var JSimpleSpreadsheetCell = function(selector, cellName){
