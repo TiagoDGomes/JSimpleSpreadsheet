@@ -8,13 +8,15 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
 ## Simple usage:
 
 ```javascript
- $(your_table_selector).jSimpleSpreadsheet();
+var your_table_selector = '.this-is-a-example';
+$(your_table_selector).jSimpleSpreadsheet();
 ```
 
 ## Advanced usage:
 
 ```javascript
- $(your_table_selector).jSimpleSpreadsheet({					
+var your_table_selector = '.this-is-a-example';
+$(your_table_selector).jSimpleSpreadsheet({					
         onFocus: function(colName, rowIndex, element){
             // Example - onFocus:
             alert('This is ' + colName + rowIndex + ' with focus!');
@@ -35,13 +37,14 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
         theme:      'jquery.jsimplespreadsheet.theme.css',      // CSS file       
         trSelector: 'tr',                                       // Row tag
         tdSelector: 'td',                                       // Cell tag
- });
+});
 ```
 
 
 
 ```javascript
-var worksheet = new JSimpleSpreadsheet('.my-spreadsheet', {					
+var your_table_selector = '.this-is-a-example';
+var worksheet = new JSimpleSpreadsheet(your_table_selector, {					
     onFocus: function(colName, rowIndex, valueRaw){
         // Example - onFocus:
         alert('This is ' + colName + rowIndex + ' with focus!');
