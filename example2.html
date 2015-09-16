@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html>  
+    <head>  
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">  
+        <title>jSimpleSpreadsheet Example</title> 
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> 
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+
+        <link rel="stylesheet" type="text/css" href="jquery.jsimplespreadsheet.css">
+        <script src="jquery.jsimplespreadsheet.js"></script>
+        <script>
+            $(document).ready(function() {
+
+            });
+        </script>
+
+
+    </head>  
+    <body>       
+        <h1>jSimpleSpreadsheet Example - Objects</h1>
+
+
+        <h2>Test!</h2>
+        <textarea id="code" rows="20" cols="100">
+// Example (click 'Execute')
+var worksheet = new JSimpleSpreadsheet('.my-spreadsheet', {					
+    onFocus: function(colName, rowIndex, valueRaw){
+        //// Example - onFocus:
+        // alert('This is ' + colName + rowIndex + ' with focus!');
+    },
+    onBlur: function(colName, rowIndex, valueRaw){						
+        //// Example - onFocus:
+        // alert('Bye ' + colName + rowIndex);
+    },
+    onChange: function(colName, rowIndex, valueRaw, oldValueRaw, element){					
+        //// Example - onBlur:
+        // if (confirm('Accept ' + colName + rowIndex + ' with ' + valueRaw + '?')){
+        //    return true;
+        // } else {
+        //    return false;  // Undo changes
+        // }
+        //
+    },
+    theme: 'jquery.jsimplespreadsheet.theme.css' 
+});
+worksheet.getCell('A1').setValue('This is A1');
+worksheet.getCell(['C3','B4']).setValue('Both C3 and B4 setValue');
+console.log(worksheet.getCell('A1').getValue());
+console.log(worksheet.getCell(['A1','C3']).getValue());      // Return only first element value
+worksheet.getCell(['C1','A2']).setEnabled(false);      
+        </textarea>
+
+        <p>
+            <button onclick="try {
+                        eval($('#code').val());
+                    } catch (err) {
+                        alert('Hey!\n' + err)
+                    }">Execute</button>        
+            <button onclick="eval($('#code').val());">Execute (debug console)</button>        
+            <button onclick="if (!$('.my-spreadsheet').jSimpleSpreadsheet('undo')) {
+                        alert('Finished')
+                    }
+                    ;
+                    ">undo</button>        
+        </p>
+        <table border="1" class="my-spreadsheet">                    
+            <tbody>
+                <tr>
+                    <th>&nbsp;</th><th>A</th><th>B</th><th>C</th>
+                </tr>
+                <tr>                                                         
+                    <th>1</th><td></td><td></td><td></td>                        
+                </tr>                                            
+                <tr>                                                         
+                    <th>2</th><td></td><td></td><td></td>                       
+                </tr>                                            
+                <tr>                                                         
+                    <th>3</th><td></td><td></td><td></td>                         
+                </tr>                                            
+                <tr>                                                         
+                    <th>4</th><td></td><td></td><td></td>                     
+                </tr>                                            
+                <tr>                                                         
+                    <th>5</th><td></td><td></td><td></td>                       
+                </tr>                                        
+                <tr>                                                                                                                  
+                    <th>6</th><td></td><td></td><td data-name="total"></td>                      
+                </tr>  
+            </tbody>
+        </table> 
+        <address>
+            <p>
+                Copyleft 2015 Tiago Donizett Gomes (<a href="https://github.com/TiagoDGomes/jSimpleSpreadsheet">https://github.com/TiagoDGomes/jSimpleSpreadsheet</a>)
+            </p>
+        </address>
+    </body>
+</html>

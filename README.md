@@ -40,7 +40,38 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
 
 
 
+```javascript
+var worksheet = new JSimpleSpreadsheet('.my-spreadsheet', {					
+    onFocus: function(colName, rowIndex, valueRaw){
+        // Example - onFocus:
+        alert('This is ' + colName + rowIndex + ' with focus!');
+    },
+    onBlur: function(colName, rowIndex, valueRaw){						
+        // Example - onFocus:
+        alert('Bye ' + colName + rowIndex);
+    },
+    onChange: function(colName, rowIndex, valueRaw, oldValueRaw, element){					
+        // Example - onBlur:
+        if (confirm('Accept ' + colName + rowIndex + ' with ' + valueRaw + '?')){
+            return true;
+        } else {
+            return false;  // Undo changes
+        }
+        
+    },
+    theme: 'jquery.jsimplespreadsheet.theme.css' 
+});
+worksheet.getCell('A1').setValue('This is A1');
+worksheet.getCell(['C3','B4']).setValue('Both C3 and B4 setValue');
+console.log(worksheet.getCell('A1').getValue());
+console.log(worksheet.getCell(['A1','C3']).getValue());      // Return only first element value
+worksheet.getCell(['C1','A2']).setEnabled(false);
+```
+
 ## Releases:
+
+* v2.1
+      - JSimpleSpreadsheet object
 * v2.0.1
       - Minimal changes
 * v2.0

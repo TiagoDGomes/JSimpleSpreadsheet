@@ -21,7 +21,7 @@
         <h2>Test!</h2>
         <textarea id="code" rows="20" cols="100">
 // Example (click 'Execute')
-$('.my-spreadsheet').jSimpleSpreadsheet({					
+var obj = $('.my-spreadsheet').jSimpleSpreadsheet({					
         onFocus: function(colName, rowIndex, valueRaw){
             //// Example - onFocus:
             // alert('This is ' + colName + rowIndex + ' with focus!');
@@ -41,6 +41,7 @@ $('.my-spreadsheet').jSimpleSpreadsheet({
         },
         theme: 'jquery.jsimplespreadsheet.theme.css' 
 });
+console.log(obj);
 var contentA5 = $('.my-spreadsheet').jSimpleSpreadsheet('cell','A5');      // get A5  
 $('.my-spreadsheet').jSimpleSpreadsheet('cell','B1', 'foo');               // writing 
 $('.my-spreadsheet').jSimpleSpreadsheet('cell','B6', 'writing in B6');     // writing   

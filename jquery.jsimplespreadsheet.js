@@ -66,7 +66,11 @@ if (typeof KeyEvent === "undefined") {
                         
             _jssTableSelector : null,
             _selected: null,
-            _undoList: []
+            _undoList: [],
+            _widget: null
+        },
+        widget: function(){
+            return this.options._widget;
         },
         selected: function(cellName){
             return this._selected;
@@ -98,6 +102,7 @@ if (typeof KeyEvent === "undefined") {
         },
         _create: function() {
             var widget = this;
+            widget.options._widget = widget;
             widget._jssTableSelector = 'jSimpleSpreadsheet-runner-' + this.options.id;
             $(widget.element).addClass(widget._jssTableSelector);
             $(widget.element).addClass('jSimpleSpreadsheet-runner');
@@ -249,6 +254,7 @@ if (typeof KeyEvent === "undefined") {
                         break;
                 }
             });
+            
         }
               
     } );
@@ -294,19 +300,45 @@ function _jss_getPosition(oField) {
        return (iCaretPos);
 }    
 
+
+
+function jss_getCellSelector(tableSelector, cellName, tag){
+    var cellsName='';
+    var comma = '';
+    var cells;
+    if (cellName.constructor !== Array){        
+        cellName = cellName.split(',');         
+    } 
+    //console.log('jss_getCellSelector:: cellName after split = ' + cellName);
+    if (cellName.constructor === Array){
+        cells = cellName;
+        //console.log('jss_getCellSelector:: starting loop -> cells = ' + cells);
+        for (c in cells){
+            //console.log('jss_getCellSelector:: inLoop -> c = ' + cells[c]);
+            cellsName += comma + tableSelector + ' ' + tag + '.' + cells[c].toUpperCase();
+            comma = ',';
+        }
+    } else {
+        cellsName = tableSelector + ' ' + tag + '.' + cellName;
+    }
+    
+    //console.log('jss_getCellSelector:: cellsName finish = ' + cellsName);
+    return cellsName;
+}
+
 function jss_getCellInputSelector(tableSelector, cellName){
-    return tableSelector + ' input.' + JSS_CELL_SELECTOR_PREFFIX + cellName.toUpperCase();
+    return jss_getCellSelector(tableSelector, cellName, 'input');
 }
 
 function jss_getCellSpanSelector(tableSelector, cellName){
-    return tableSelector + ' span.' + JSS_CELL_SELECTOR_PREFFIX + cellName.toUpperCase();
+    return jss_getCellSelector(tableSelector, cellName, 'span');
 }
 
 function _jss_cellValue(widget, cellName, cellValue){
     var selectorTextInput = jss_getCellInputSelector(widget._jssTableSelector, cellName);
     var selectorTextSpan  = jss_getCellSpanSelector(widget._jssTableSelector, cellName);
     if (cellValue !== undefined){
-        widget.options._undoList.push([widget._jssTableSelector, cellName,$(selectorTextInput).data('value')]);
+        widget.options._undoList.push([widget._jssTableSelector, cellName, $(selectorTextInput).data('value')]);
         $(selectorTextInput).val(cellValue);
         $(selectorTextInput).data('value', cellValue);
     }
@@ -343,17 +375,48 @@ function jss_enableCell(tableSelector, cellName, enable, dontForce){
             $(selectorTextInput).data('disabled', true);
         }
     } else {
-        return ( $(selectorTextInput).data('disabled') === undefined )
+        return ( $(selectorTextInput).data('disabled') === undefined );
     }
-    return $(selectorTextInput).val()
+    return $(selectorTextInput).val();
     
 }
 function jss_moveTo(tableSelector, cellname, col, row){
     var next;
     if (cellname !== null){
-        next = $(tableSelector + ' input.' + JSS_CELL_SELECTOR_PREFFIX + cellname);
+        next = $(tableSelector + ' input.' + cellname);
     } else {
         next = $(tableSelector + ' input.' + JSS_CELL_SELECTOR_PREFFIX + col + '_' + row);
     }        
     next.focus();
 } 
+
+var JSimpleSpreadsheet = function(selector, options){
+    var widget = $(selector).jSimpleSpreadsheet(options);
+    this.widget = widget;
+    this.getCell = function(cellName){
+        return new JSimpleSpreadsheetCell(widget, cellName);              
+    };
+};
+
+var JSimpleSpreadsheetCell = function(selector, cellName){
+
+    this.value;
+     
+    this._getInput = function(){
+        return $(selector).find('.' + cellName)[0]
+    };
+    this.getValue = function(){
+        return this._getInput().value;
+    };
+    this.setValue = function(value){
+        //console.log('JSimpleSpreadsheetCell::setValue - cellName=' + cellName);
+        return $(selector).jSimpleSpreadsheet('cell', cellName , value);
+    };
+    this.isEnabled = function(){
+        return $(selector).jSimpleSpreadsheet('enableCell', cellName);
+    };
+    this.setEnabled = function(value){
+        return $(selector).jSimpleSpreadsheet('enableCell', cellName , value);
+    };
+        
+};
