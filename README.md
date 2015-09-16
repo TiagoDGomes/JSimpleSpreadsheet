@@ -1,4 +1,5 @@
 # jSimpleSpreadsheet
+     
 
 Simple, easy and uncomplicated. Your HTML tables are navigable and editable (like a spreadsheet).
 
@@ -6,13 +7,13 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
 
 ## Simple usage:
 
-```
+```javascript
  $(your_table_selector).jSimpleSpreadsheet();
 ```
 
 ## Advanced usage:
 
-```
+```javascript
  $(your_table_selector).jSimpleSpreadsheet({					
         onFocus: function(colName, rowIndex, element){
             // Example - onFocus:
