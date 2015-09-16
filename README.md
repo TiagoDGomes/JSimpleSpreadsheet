@@ -19,7 +19,7 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
             alert('This is ' + colName + rowIndex + ' with focus!');
         },
         onBlur: function(colName, rowIndex, element){						
-            // Example - onFocus:
+            // Example - onBlur:
             alert('Bye ' + colName + rowIndex);
         },
         onChange: function(colName, rowIndex, valueRaw, oldValueRaw, element){
@@ -31,11 +31,9 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
             }
             //
         },
-        theme: null,           // CSS file       
-        trSelector: 'tr',      // Row tag
-        tdSelector: 'td',      // Cell tag
-        
-             
+        theme:      'jquery.jsimplespreadsheet.theme.css',      // CSS file       
+        trSelector: 'tr',                                       // Row tag
+        tdSelector: 'td',                                       // Cell tag
  });
 ```
 
