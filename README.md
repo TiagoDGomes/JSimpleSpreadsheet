@@ -44,7 +44,7 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
       - Add full 'undo' support (<code>$(your_table_selector).jSimpleSpreadsheet('undo')</code> )
       - Clean code
       - Add event: onChange
-      - Modify <code>onBlur: function(colName, rowIndex, valueRaw){} </code>
+      - Modify <code>onBlur: function(colName, rowIndex, element){} </code>
       - Any tag support ('trSelector' and 'tdSelector' options)
 * v1.1.3
       - Bugfix: 'undo' 'onBlur' saving data-value
