@@ -19,7 +19,11 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
             alert('This is ' + colName + rowIndex + ' with focus!');
         },
         onBlur: function(colName, rowIndex, valueRaw){						
-            // Example - onBlur:
+            // Example - onFocus:
+            alert('Bye ' + colName + rowIndex);
+        },
+        onChange: function(colName, rowIndex, valueRaw, oldValueRaw, element){
+            // Example - onChange:
             if (confirm('Accept ' + colName + rowIndex + ' with ' + valueRaw + '?')){
                 return true;
             } else {
@@ -27,13 +31,23 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
             }
             //
         },
-        theme: 'jquery.jsimplespreadsheet.theme.css' 
+        theme: null,           // CSS file       
+        trSelector: 'tr',      // Row tag
+        tdSelector: 'td',      // Cell tag
+        
+             
  });
 ```
 
 
 
 ## Releases:
+* v2.0
+      - Add full 'undo' support (<code>$(your_table_selector).jSimpleSpreadsheet('undo')</code> )
+      - Clean code
+      - new event: onChange
+      - Add <code>onBlur: function(colName, rowIndex, valueRaw){} </code>
+      - Any tag support ('trSelector' and 'tdSelector' options)
 * v1.1.3
       - Bugfix: 'undo' 'onBlur' saving data-value
       - Removed <code> console.log() </code>     

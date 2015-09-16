@@ -27,6 +27,10 @@ $('.my-spreadsheet').jSimpleSpreadsheet({
             // alert('This is ' + colName + rowIndex + ' with focus!');
         },
         onBlur: function(colName, rowIndex, valueRaw){						
+            //// Example - onFocus:
+            // alert('Bye ' + colName + rowIndex);
+        },
+        onChange: function(colName, rowIndex, valueRaw, oldValueRaw, element){					
             //// Example - onBlur:
             // if (confirm('Accept ' + colName + rowIndex + ' with ' + valueRaw + '?')){
             //    return true;
@@ -54,6 +58,8 @@ alert('Selected: ' + $(selected).data('cell-name'));
         
         <p>
         <button onclick="try{eval($('#code').val());}catch(err){alert('Hey!\n' + err)}">Execute</button>        
+        <button onclick="eval($('#code').val());">Execute (debug console)</button>        
+        <button onclick="if(!$('.my-spreadsheet').jSimpleSpreadsheet('undo')){alert('Finished')}; ">undo</button>        
         </p>
         <table border="1" class="my-spreadsheet">                    
             <tbody>
@@ -76,7 +82,7 @@ alert('Selected: ' + $(selected).data('cell-name'));
                     <th>5</th><td>banana</td><td>11</td><td>Tiago</td>                       
                 </tr>                                        
                 <tr>                                                                                                                  
-                    <th>6</th><td>&nbsp;</td><td data-disabled>disabled in HTML</td><td>OK, OK!</td>                      
+                    <th>6</th><td>&nbsp;</td><td data-disabled>disabled in HTML</td><td data-name="total">Name cell: total</td>                      
                 </tr>  
             </tbody>
         </table> 

@@ -6,8 +6,8 @@ table.jSimpleSpreadsheet-runner input[type="text"]{width:100%;height: 100%}
 
 table.jSimpleSpreadsheet-runner textarea,
 table.jSimpleSpreadsheet-runner input[type="text"],
-table.jSimpleSpreadsheet-runner input[type="number"]{border:1px solid transparent;cursor:pointer;}
+table.jSimpleSpreadsheet-runner input[type="number"]{border:1px solid transparent;cursor:default;}
 
-table.jSimpleSpreadsheet-runner textarea:hover,
-table.jSimpleSpreadsheet-runner input[type="text"]:hover,
-table.jSimpleSpreadsheet-runner input[type="number"]:hover{border:1px solid #aeaeae;background-color:#fefefe;}
+table.jSimpleSpreadsheet-runner td.cell:hover
+table.jSimpleSpreadsheet-runner span.cell:hover
+{border:1px solid #aeaeae;background-color:#fefefe;}

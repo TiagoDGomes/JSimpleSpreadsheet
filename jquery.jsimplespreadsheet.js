@@ -1,5 +1,5 @@
 /**
- * jSimpleSpreadsheet 1.1.3
+ * jSimpleSpreadsheet 2.0
  * @author Tiago Donizetti Gomes (https://github.com/TiagoDGomes/jSimpleSpreadsheet)
  *  
  * This program is free software: you can redistribute it and/or modify
@@ -17,6 +17,7 @@
  *
  */
 
+var JSS_CELL_SELECTOR_PREFFIX = 'cell_';   
 
 if (typeof KeyEvent == "undefined") {
         var KeyEvent = {
@@ -49,152 +50,211 @@ if (typeof KeyEvent == "undefined") {
 (function ( $ ) {      
     $.widget( "tdg.jSimpleSpreadsheet", {        
         options: {
-            onFocus: function(colName, rowIndex, valueRaw){
+            onFocus: function(colName, rowIndex, element){
                 // nothing
             },
-            onBlur: function(colName, rowIndex, valueRaw){
+            onBlur: function(colName, rowIndex, element){
+                // nothing
+            },
+            onChange: function(colName, rowIndex, valueRaw, oldValueRaw, element){
                 return true;
             },
-            theme: null,
-            id: _jSmpSprsht_Rnd(),
-            _jSmpSprshtTableSelector : null,
-            _selected: null
-            
+            theme: null,            
+            trSelector: 'tr',
+            tdSelector: 'td', 
+            id: _jss_rnd(),
+                        
+            _jssTableSelector : null,
+            _selected: null,
+            _undoList: []
         },
         selected: function(cellName){
             return this._selected;
         },
         enableCell: function(cellName, enable, dontForce){
-            return jSimpleSpreadSheet_enableCell(this._jSmpSprshtTableSelector, cellName, enable, dontForce)
+            return jss_enableCell(this._jssTableSelector, cellName, enable, dontForce)
         },
         cell: function(cellName, value){
-            return jSimpleSpreadSheet_cellValue(this._jSmpSprshtTableSelector, cellName, value);
+            return _jss_cellValue(this, cellName, value);
+        },
+        undo: function(){            
+            if (this.options._undoList.length > 0){
+                var cellItem = this.options._undoList.pop();
+                var tableSelector = cellItem[0];
+                var cellName = cellItem[1];
+                var cellValue = cellItem[2];
+                var selectorTextInput = jss_getCellInputSelector(tableSelector, cellName);
+                var selectorTextSpan  = jss_getCellSpanSelector(tableSelector, cellName);
+                if (cellValue !== undefined){
+                    $(selectorTextInput).val(cellValue);
+                    $(selectorTextInput).data('value', cellValue);
+                }
+                $(selectorTextSpan).text($(selectorTextInput).val()); 
+                console.log(this.options._undoList);
+                return this.options._undoList.length;                  
+            } else {
+                return 0;
+            }
         },
         _create: function() {
             var widget = this;
-            widget._jSmpSprshtTableSelector = 'jSimpleSpreadsheet-runner-' + this.options.id;
-            $(widget.element).addClass(widget._jSmpSprshtTableSelector);
+            widget._jssTableSelector = 'jSimpleSpreadsheet-runner-' + this.options.id;
+            $(widget.element).addClass(widget._jssTableSelector);
             $(widget.element).addClass('jSimpleSpreadsheet-runner');
-            widget._jSmpSprshtTableSelector = '.' + widget._jSmpSprshtTableSelector;
+            widget._jssTableSelector = '.' + widget._jssTableSelector;
             
             if (widget.options.theme !== null){
-                  link = document.createElement( "link" );
+                  link      = document.createElement( "link" );
                   link.href = widget.options.theme;
                   link.type = "text/css";
-                  link.rel = "stylesheet";
+                  link.rel  = "stylesheet";
                   document.getElementsByTagName( "head" )[0].appendChild( link );           
             }            
             
-            var colIndex;
+            var colIndex = 1;
             var rowIndex = 0;
-            var inputStyle='';
-            var textStyle='';
             
-            $(widget._jSmpSprshtTableSelector + ' tr').each(function() {
-                colIndex = 1;
-                $(this).children('td').each(function(){ 
+            $(widget._jssTableSelector + ' ' + widget.options.trSelector).each(function() {
+                $(this).children(widget.options.tdSelector).each(function(){ 
+                    $(this).addClass('cell');
                     var valueRaw =  $(this).text().trim();
                     var colName = String.fromCharCode(colIndex + 64);    
+                    
+                    var selectorCellName       = JSS_CELL_SELECTOR_PREFFIX + colName + rowIndex;
+                    var selectorCellName_      = JSS_CELL_SELECTOR_PREFFIX + colName + "_" + rowIndex;
+                    var selectorCellIndex      = JSS_CELL_SELECTOR_PREFFIX + colIndex + '_' + rowIndex;
+                    
+                    this.innerHTML             = ''; 
+                    
+                    var inputText              = document.createElement('input');
+                    var spanText               = document.createElement('span');
+                    
+                    inputText.name             = $(this).data('name') !== undefined ? $(this).data('name') : colName + rowIndex + '_' + colName + '_' + rowIndex;
+                    
+                    
+                    inputText.value            = valueRaw;   
+                    inputText.type             = 'text';   
+                    inputText.dataset.cellname = colName + rowIndex ;
+                    inputText.dataset.colname  = colName;
+                    inputText.dataset.col      = colIndex;
+                    inputText.dataset.row      = rowIndex;
+                    inputText.dataset.value    = valueRaw;
+                    inputText.className        = 'value cell ' +
+                                                 colName + rowIndex + ' ' + 
+                                                 selectorCellIndex + ' ' + 
+                                                 selectorCellName + ' ' + 
+                                                 selectorCellName_ ;
+                    
+                    spanText.dataset.cellname  = inputText.dataset.cellname ;                     
+                    spanText.className         = inputText.className;
+                    
+                    
+                    this.appendChild(inputText);
+                    this.appendChild(spanText);
+                    
                     if ($(this).data('disabled')=== undefined){
-                        inputStyle = '';
-                        textStyle = 'display: none';
+                        $(inputText).show();
+                        $(spanText).hide();
                     } else {
-                        inputStyle = 'display: none';
-                        textStyle = '';
+                        $(inputText).hide();
+                        $(spanText).show();
                     }
-                    this.innerHTML = ('<input type="text' + 
-                                      '" name="' + colName + rowIndex + '_' + colName + '_' + rowIndex +
-                                      '" class="value" style="' + inputStyle + 
-                                      '" data-cell-name="' + colName + rowIndex + 
-                                      '" data-col-name="' + colName + 
-                                      '" data-col="' + colIndex + 
-                                      '" data-row="' + rowIndex + 
-                                      '" data-value="' + valueRaw + 
-                                      '" value="'+ valueRaw + 
-                                      '">' + 
-                                      '<span data-cell-name="' + colName + rowIndex + 
-                                      '" style="' + textStyle +
-                                      '" class="value">'+ valueRaw + 
-                                      '</span>');
+                    $(spanText).text(valueRaw);
                     
                     colIndex++;
                 });
                 rowIndex++;
+                colIndex = 1;
+                
             });
             
             
             /**
-             * evento: Ao focar célula
+             * event: focus
              * 
              */
             
-            $(widget._jSmpSprshtTableSelector + " input").focus(function() {
-                var colName = $(this).data('col-name');
+            $(widget._jssTableSelector + ' input[type="text"]').focus(function() {
+                var colName = $(this).data('colname');
                 var rowIndex = $(this).data('row');
-                var valueRaw = this.value;
                 $(this).addClass('focus');
-                widget.options.onFocus(colName, rowIndex, valueRaw);
-                widget._selected = this;                             
+                widget.options.onFocus(colName, rowIndex, this);
+                widget._selected = this; 
+                this.select();                            
             });
             
             /**
-             * evento: Ao sair da célula
+             * event: change
              * 
              */
             
-            $(widget._jSmpSprshtTableSelector + " input").blur(function() {
-                var colName = $(this).data('col-name');
+            $(widget._jssTableSelector + ' input[type="text"]').change(function() {
+                var colName = $(this).data('colname');
+                var rowIndex = $(this).data('row');
+                var oldValueRaw = $(this).data('value');
+                console.log('change');
+                var selectorTextSpan = jss_getCellSpanSelector(widget._jssTableSelector, colName + rowIndex);
+                var ret = widget.options.onBlur(colName, rowIndex, this.value, oldValueRaw, this);
+                if (ret == false){
+                    jss_restoreDataValue(widget._jssTableSelector, colName + rowIndex);
+                } else { 
+                    _jss_cellValue(widget, colName + rowIndex, this.value);
+                }                          
+            });
+            
+            /**
+             * event: blur
+             * 
+             */
+            
+            $(widget._jssTableSelector + " input").blur(function() {
+                var colName = $(this).data('colname');
                 var rowIndex = $(this).data('row');
                 var valueRaw = this.value;
-                var selectorTextSpan = jSimpleSpreadSheet_getCellSpanSelector(widget._jSmpSprshtTableSelector, colName + rowIndex);
+                var oldValueRaw = $(this).data('value');
+                console.log('blur');
+                var selectorTextSpan = jss_getCellSpanSelector(widget._jssTableSelector, colName + rowIndex);
                 $(this).removeClass('focus');
-                var ret = widget.options.onBlur(colName, rowIndex, valueRaw);
-                if (ret == false){
-                    jSimpleSpreadSheet_restoreDataValue(widget._jSmpSprshtTableSelector, colName + rowIndex);
-                } else {
-                    jSimpleSpreadSheet_cellValue(widget._jSmpSprshtTableSelector, colName + rowIndex, this.value);
-                }     
+                widget.options.onBlur(colName, rowIndex, this);
+                     
                 
             });    
             
-            /**
-             * evento: seleção do texto ao focar célula
-             */
-            
-            $(widget._jSmpSprshtTableSelector + ' input[type=text]').focus(function() {
-                this.select();
-            });
+           
             
             /**
-             * evento: ao pressionar teclas direcionais ou Enter
+             * event: keydown
              */
             
-            $(widget._jSmpSprshtTableSelector + ' input').keydown(function(event) {
+            $(widget._jssTableSelector + ' input').keydown(function(event) {
                 var next;
+                var colIndex = $(this).data('col');
+                var rowIndex = $(this).data('row');
+                        
                 switch (event.which) {
                     case KeyEvent.DOM_VK_RETURN:
                     case KeyEvent.DOM_VK_DOWN:
                         event.preventDefault();
-                        next = $(widget._jSmpSprshtTableSelector + ' input[data-col="' + ($(this).data('col')) + '"][data-row="' + ($(this).data('row') + 1) + '"]');
-                        next.focus();
+                        jss_moveTo(widget._jssTableSelector, null, colIndex, rowIndex + 1);
+                        
                         break;
                     case KeyEvent.DOM_VK_UP:
                         event.preventDefault();
-                        next = $(widget._jSmpSprshtTableSelector + ' input[data-col="' + ($(this).data('col')) + '"][data-row="' + ($(this).data('row') - 1) + '"]');
-                        next.focus();
+                        jss_moveTo(widget._jssTableSelector, null, colIndex, rowIndex - 1);
+                        
                         break;
                     case KeyEvent.DOM_VK_RIGHT:
-                        if (this.value.length === _jSimpleSpreasheet_getPosition(this)) {
+                        if (this.value.length === _jss_getPosition(this)) {
                             event.preventDefault();
-                            next = $(widget._jSmpSprshtTableSelector + ' input[data-col="' + ($(this).data('col') + 1) + '"][data-row="' + ($(this).data('row')) + '"]')
-                            next.focus();
+                            jss_moveTo(widget._jssTableSelector, null, colIndex + 1, rowIndex);
+                            
                         }
                         break;
                     case KeyEvent.DOM_VK_LEFT:
-                        if (_jSimpleSpreasheet_getPosition(this) === 0) {
+                        if (_jss_getPosition(this) === 0) {
                             event.preventDefault();
-                            next = $(widget._jSmpSprshtTableSelector + ' input[data-col="' + ($(this).data('col') - 1) + '"][data-row="' + ($(this).data('row')) + '"]')
-                            next.focus();
+                            jss_moveTo(widget._jssTableSelector, null, colIndex - 1, rowIndex);
+                            
                         }
                         break;
                 }
@@ -206,22 +266,22 @@ if (typeof KeyEvent == "undefined") {
 }( jQuery ));
 
 /**
- * _jSmpSprsht_Rnd 
+ * _jss_rnd 
  * Returns a random number of 1 to 99999
 */        
-function _jSmpSprsht_Rnd (){
+function _jss_rnd (){
     return Math.round(Math.random() * 100000);
 }
 
 
 /**
- * _jSimpleSpreasheet_getPosition
+ * _jss_getPosition
  * Returns the caret (cursor) position of the specified text field.
  * Return value range is 0-oField.value.length.
  * Original method: doGetCaretPosition
  * https://stackoverflow.com/questions/2897155/get-cursor-position-in-characters-within-a-text-input-field
 */
-function _jSimpleSpreasheet_getPosition(oField) {
+function _jss_getPosition(oField) {
        // Initialize
    var iCaretPos = 0;
    // IE Support
@@ -243,36 +303,37 @@ function _jSimpleSpreasheet_getPosition(oField) {
        return (iCaretPos);
 }    
 
-function jSimpleSpreadSheet_getCellInputSelector(tableSelector, cellName){
-    return tableSelector + ' input[data-cell-name="' + cellName.toUpperCase() + '"]';
+function jss_getCellInputSelector(tableSelector, cellName){
+    return tableSelector + ' input.' + JSS_CELL_SELECTOR_PREFFIX + cellName.toUpperCase();
 }
 
-function jSimpleSpreadSheet_getCellSpanSelector(tableSelector, cellName){
-    return tableSelector + ' span[data-cell-name="' + cellName.toUpperCase() + '"]';
+function jss_getCellSpanSelector(tableSelector, cellName){
+    return tableSelector + ' span.' + JSS_CELL_SELECTOR_PREFFIX + cellName.toUpperCase();
 }
 
-function jSimpleSpreadSheet_cellValue(tableSelector, cellName, cellValue){
-    var selectorTextInput = jSimpleSpreadSheet_getCellInputSelector(tableSelector, cellName);
-    var selectorTextSpan  = jSimpleSpreadSheet_getCellSpanSelector(tableSelector, cellName);
+function _jss_cellValue(widget, cellName, cellValue){
+    var selectorTextInput = jss_getCellInputSelector(widget._jssTableSelector, cellName);
+    var selectorTextSpan  = jss_getCellSpanSelector(widget._jssTableSelector, cellName);
     if (cellValue !== undefined){
+        widget.options._undoList.push([widget._jssTableSelector, cellName,$(selectorTextInput).data('value')]);
         $(selectorTextInput).val(cellValue);
         $(selectorTextInput).data('value', cellValue);
     }
-    $(selectorTextSpan).text($(selectorTextInput).val());
+    $(selectorTextSpan).text($(selectorTextInput).val());    
     return $(selectorTextInput).val(); 
 }
-function jSimpleSpreadSheet_restoreDataValue(tableSelector, cellName){
-    var selectorTextInput = jSimpleSpreadSheet_getCellInputSelector(tableSelector, cellName);
-    var selectorTextSpan  = jSimpleSpreadSheet_getCellSpanSelector(tableSelector, cellName);
+function jss_restoreDataValue(tableSelector, cellName){
+    var selectorTextInput = jss_getCellInputSelector(tableSelector, cellName);
+    var selectorTextSpan  = jss_getCellSpanSelector(tableSelector, cellName);
     var dataValue = $(selectorTextInput).data('value');
     $(selectorTextInput).val(dataValue);
     $(selectorTextSpan).text(dataValue);
     return $(selectorTextInput).val(); 
 }
 
-function jSimpleSpreadSheet_enableCell(tableSelector, cellName, enable, dontForce){ 
-    var selectorTextInput = jSimpleSpreadSheet_getCellInputSelector(tableSelector, cellName);
-    var selectorTextSpan  = jSimpleSpreadSheet_getCellSpanSelector(tableSelector, cellName);
+function jss_enableCell(tableSelector, cellName, enable, dontForce){ 
+    var selectorTextInput = jss_getCellInputSelector(tableSelector, cellName);
+    var selectorTextSpan  = jss_getCellSpanSelector(tableSelector, cellName);
     if(enable !== undefined){
         if (enable){
             $(selectorTextInput).show();
@@ -296,3 +357,12 @@ function jSimpleSpreadSheet_enableCell(tableSelector, cellName, enable, dontForc
     return $(selectorTextInput).val()
     
 }
+function jss_moveTo(tableSelector, cellname, col, row){
+    var next;
+    if (cellname !== null){
+      next = $(tableSelector + ' input.' + JSS_CELL_SELECTOR_PREFFIX + cellname);
+    } else {
+      next = $(tableSelector + ' input.' + JSS_CELL_SELECTOR_PREFFIX + col + '_' + row);
+    }        
+    next.focus();
+} 
