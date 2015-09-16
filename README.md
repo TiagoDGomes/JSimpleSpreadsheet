@@ -14,11 +14,11 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
 
 ```
  $(your_table_selector).jSimpleSpreadsheet({					
-        onFocus: function(colName, rowIndex, valueRaw){
+        onFocus: function(colName, rowIndex, element){
             // Example - onFocus:
             alert('This is ' + colName + rowIndex + ' with focus!');
         },
-        onBlur: function(colName, rowIndex, valueRaw){						
+        onBlur: function(colName, rowIndex, element){						
             // Example - onFocus:
             alert('Bye ' + colName + rowIndex);
         },
@@ -45,8 +45,8 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
 * v2.0
       - Add full 'undo' support (<code>$(your_table_selector).jSimpleSpreadsheet('undo')</code> )
       - Clean code
-      - new event: onChange
-      - Add <code>onBlur: function(colName, rowIndex, valueRaw){} </code>
+      - Add event: onChange
+      - Modify <code>onBlur: function(colName, rowIndex, valueRaw){} </code>
       - Any tag support ('trSelector' and 'tdSelector' options)
 * v1.1.3
       - Bugfix: 'undo' 'onBlur' saving data-value
