@@ -19,6 +19,57 @@ $(your_table_selector).jSimpleSpreadsheet();
 ```javascript
 var your_table_selector = '.this-is-a-example';
 
+var worksheet = new JSimpleSpreadsheet(your_table_selector, {					
+    onFocus: function(colName, rowIndex, valueRaw){
+        // Example - onFocus:
+        alert('This is ' + colName + rowIndex + ' with focus!');
+    },
+    onBlur: function(colName, rowIndex, valueRaw){						
+        // Example - onFocus:
+        alert('Bye ' + colName + rowIndex);
+    },
+    onChange: function(colName, rowIndex, valueRaw, oldValueRaw, element){					
+        // Example - onBlur:
+        if (confirm('Accept ' + colName + rowIndex + ' with ' + valueRaw + '?')){
+            return true;
+        } else {
+            return false;  // Undo changes
+        }
+        
+    },
+    theme: 'jquery.jsimplespreadsheet.theme.css' 
+});
+
+// Setting value to A1
+worksheet.getCell('A1').setValue('This is A1');
+
+// Setting value to C3 and B4
+worksheet.getCell(['C3','B4']).setValue('Both C3 and B4 setValue');
+
+// Getting value from A1
+var A1 = worksheet.getCell('A1').getValue();
+
+// Return only first element value
+var only_first = worksheet.getCell(['A1','C3']).getValue();      
+
+// Disabling
+worksheet.getCell(['C1','A2']).setEnabled(false);
+
+// Checking
+var enabled = worksheet.getCell('C1').isEnabled();
+
+// Undo
+worksheet.getCell('B5').setValue('Undo test');
+worksheet.undo();
+
+
+```
+
+#### Classical jQueryUI Widget usage:
+
+```javascript
+var your_table_selector = '.this-is-a-example';
+
 $(your_table_selector).jSimpleSpreadsheet({					
         onFocus: function(colName, rowIndex, element){
             // Example - onFocus:
@@ -46,7 +97,7 @@ var contentA5 = $(your_table_selector).jSimpleSpreadsheet('cell','A5');      // 
 
 $(your_table_selector).jSimpleSpreadsheet('cell','B1', 'foo');               // writing 
 $(your_table_selector).jSimpleSpreadsheet('cell','B6', 'writing in B6');     // writing   
-$(your_table_selector).jSimpleSpreadsheet('cell','C3', '<b>I am stubborn... oops!</b>');     // writing   
+$(your_table_selector).jSimpleSpreadsheet('cell','C3', "<b>Don't use HTML code here</b>");     // writing   
 $(your_table_selector).jSimpleSpreadsheet('cell','A2', null);                // set null
 $(your_table_selector).jSimpleSpreadsheet('enableCell','B6', true);          // enabling B6 
 $(your_table_selector).jSimpleSpreadsheet('enableCell','c6', false);         // disabling C6
@@ -59,43 +110,6 @@ var selected = $(your_table_selector).jSimpleSpreadsheet('selected');        // 
 
 alert(contentA5);
 alert('Selected: ' + $(selected).data('cellname'));   
-
-```
-
-I like this: 
-
-```javascript
-var your_table_selector = '.this-is-a-example';
-
-var worksheet = new JSimpleSpreadsheet(your_table_selector, {					
-    onFocus: function(colName, rowIndex, valueRaw){
-        // Example - onFocus:
-        alert('This is ' + colName + rowIndex + ' with focus!');
-    },
-    onBlur: function(colName, rowIndex, valueRaw){						
-        // Example - onFocus:
-        alert('Bye ' + colName + rowIndex);
-    },
-    onChange: function(colName, rowIndex, valueRaw, oldValueRaw, element){					
-        // Example - onBlur:
-        if (confirm('Accept ' + colName + rowIndex + ' with ' + valueRaw + '?')){
-            return true;
-        } else {
-            return false;  // Undo changes
-        }
-        
-    },
-    theme: 'jquery.jsimplespreadsheet.theme.css' 
-});
-
-worksheet.getCell('A1').setValue('This is A1');
-worksheet.getCell(['C3','B4']).setValue('Both C3 and B4 setValue');
-console.log(worksheet.getCell('A1').getValue());
-console.log(worksheet.getCell(['A1','C3']).getValue());      // Return only first element value
-worksheet.getCell(['C1','A2']).setEnabled(false);
-
-worksheet.getCell('B5').setValue('Undo test');
-worksheet.undo();  // Undo B5
 
 ```
 
