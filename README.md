@@ -12,7 +12,7 @@ var your_table_selector = '.this-is-a-example';
 $(your_table_selector).jSimpleSpreadsheet();
 ```
 
-## Advanced usage:
+## Full usage:
 
 ```javascript
 var your_table_selector = '.this-is-a-example';
