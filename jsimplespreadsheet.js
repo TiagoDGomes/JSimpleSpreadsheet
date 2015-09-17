@@ -200,7 +200,6 @@ var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
             if (nextCol !== colIndex || nextRow !== rowIndex) {
                 var cellName = String.fromCharCode(nextCol * 1 + 64) + nextRow;
                 var cell = jssObject.getCell(cellName);
-                console.log(cell);
                 cell.setSelected(true);
             }
         });
@@ -210,7 +209,6 @@ var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
          * @returns {_L25.JSimpleSpreadsheetCell}
          */
         this.getCell = function(cellName) {
-            console.log('getCell: ' + cellName);
             var cell = new JSimpleSpreadsheetCell(jssObject, cellName);
             return cell;
         };
@@ -231,7 +229,6 @@ var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
                     $(selectorTextInput).data('value', cellValue);
                 }
                 $(selectorTextSpan).text($(selectorTextInput).val());
-                console.log(jssObject._undoList);
                 return jssObject._undoList.length;
             } else {
                 return 0;
