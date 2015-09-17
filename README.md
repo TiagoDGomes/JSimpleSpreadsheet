@@ -79,6 +79,9 @@ worksheet.getCell(['C3','B4']).setValue('Both C3 and B4 setValue');
 // Getting value from A1
 var A1 = worksheet.getCell('A1').getValue();
 
+// Getting value from cell named 'total'
+var total = worksheet.getCell('total').getValue();
+
 // Disabling C1 and A2
 worksheet.getCell(['C1','A2']).setEnabled(false);
 
