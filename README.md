@@ -6,22 +6,32 @@ Simple, easy and uncomplicated. Your HTML tables are navigable and editable (lik
 (pt)
 Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáveis (como uma planilha).
 
-## Simple usage:
-
-```javascript
-var your_table_selector = '.this-is-a-example';
-
-var worksheet = new JSimpleSpreadsheet(your_table_selector);
-
-```
+## Simple example:
 
 ```html
+<html>
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <link  href="jsimplespreadsheet.css" rel="stylesheet" type="text/css">
+  <script src="jsimplespreadsheet.js"></script>
+  <script>
+     var worksheet;
+     $(document).ready(function(){
+          var your_table_selector = '.this-is-a-example';
+          worksheet = new JSimpleSpreadsheet(your_table_selector);
+     });
+  </script>
+</head>
+<body>
 <table class="this-is-a-example">
      <tr><th> </th><th>  A   </th><th>  B  </th></tr>
      <tr><th>1</th><th>banana</th><th>apple</th></tr>
      <tr><th>2</th><th>orange</th><th>grape</th></tr>         
 </table>
-```
+</body>
+</html>
+
+
 It's this!
 
 ## Full usage examples:
@@ -47,7 +57,9 @@ var worksheet = new JSimpleSpreadsheet(your_table_selector, {
         }
         
     },
-    theme: 'jsimplespreadsheet.theme.css' 
+    theme: 'jsimplespreadsheet.theme.css',
+    trSelector: 'tr',    
+    tdSelector: 'td'
 });
 
 // Setting value to A1
