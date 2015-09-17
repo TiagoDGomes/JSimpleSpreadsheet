@@ -47,7 +47,7 @@ var worksheet = new JSimpleSpreadsheet(your_table_selector, {
         }
         
     },
-    theme: 'jquery.jsimplespreadsheet.theme.css' 
+    theme: 'jsimplespreadsheet.theme.css' 
 });
 
 // Setting value to A1
