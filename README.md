@@ -1,4 +1,4 @@
-# jSimpleSpreadsheet
+# JSimpleSpreadsheet
      
 (en)
 Simple, easy and uncomplicated. Your HTML tables are navigable and editable (like a spreadsheet).
