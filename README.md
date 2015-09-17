@@ -112,6 +112,8 @@ var only_first = worksheet.getCell(['A1','C3']).getValue();
 
  
 ## Releases:
+* v3.0.3
+      - Changed 'dataset' to jQuery.data() (IE Support)
 * v3.0.2
       - KeyEvent (IE Support)
 * v3.0.1
