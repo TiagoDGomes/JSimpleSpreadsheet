@@ -15,6 +15,14 @@ var worksheet = new JSimpleSpreadsheet(your_table_selector);
 
 ```
 
+```html
+<table class="this-is-a-example">
+     <tr><th> </th><th>  A   </th><th>  B  </th></tr>
+     <tr><th>1</th><th>banana</th><th>apple</th></tr>
+     <tr><th>2</th><th>orange</th><th>grape</th></tr>         
+</table>
+```
+It's this!
 
 ## Full usage examples:
 
@@ -51,21 +59,50 @@ worksheet.getCell(['C3','B4']).setValue('Both C3 and B4 setValue');
 // Getting value from A1
 var A1 = worksheet.getCell('A1').getValue();
 
-// Return only first element value
+// Return only first element value (sorry!)
 var only_first = worksheet.getCell(['A1','C3']).getValue();      
 
-// Disabling
+// Disabling C1 and A2
 worksheet.getCell(['C1','A2']).setEnabled(false);
 
-// Checking
+// Checking C1 if enabled
 var enabled = worksheet.getCell('C1').isEnabled();
 
 // Undo
 worksheet.getCell('B5').setValue('Undo test');
 worksheet.undo();
 
-
 ```
+
+```html
+<table border="1" class=".this-is-a-example">                    
+  <tbody>
+      <tr>
+          <th>&nbsp;</th><th>A</th><th>B</th><th>C</th>
+      </tr>
+      <tr>                                                         
+          <th>1</th><td></td><td></td><td></td>                        
+      </tr>                                            
+      <tr>                                                         
+          <th>2</th><td></td><td></td><td data-disabled>disabled in HTML code</td>                        
+      </tr>                                            
+      <tr>                                                         
+          <th>3</th><td></td><td>This is B3</td><td></td>                         
+      </tr>                                            
+      <tr>                                                         
+          <th>4</th><td></td><td></td><td></td>                     
+      </tr>                                            
+      <tr>                                                         
+          <th>5</th><td></td><td></td><td></td>                       
+      </tr>                                        
+      <tr>
+          <th>6</th><td></td><td></td><td data-name="total">The input will be named 'total'</td>                      
+      </tr>  
+  </tbody>
+</table> 
+```
+
+
  
 ## Releases:
 * v3.0.1
