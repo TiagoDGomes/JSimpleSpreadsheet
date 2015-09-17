@@ -1,5 +1,5 @@
 /**
- * jSimpleSpreadsheet 3.0.1
+ * jSimpleSpreadsheet 3.0.2
  * @author Tiago Donizetti Gomes (https://github.com/TiagoDGomes/jSimpleSpreadsheet)
  *  
  * This program is free software: you can redistribute it and/or modify
@@ -21,6 +21,35 @@ var JSimpleSpreadsheetCell;
 var JSS_RUNTIME_SELECTOR = 'jSimpleSpreadsheet-runner';
 var JSS_FOCUS_SELECTOR = 'focus';
 var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
+
+
+// IE Support:
+if (typeof KeyEvent === "undefined") {
+        var KeyEvent = {
+            DOM_VK_CANCEL: 3,
+            DOM_VK_BACK_SPACE: 8,
+            DOM_VK_TAB: 9,
+            DOM_VK_CLEAR: 12,
+            DOM_VK_RETURN: 13,
+            DOM_VK_ENTER: 14,
+            DOM_VK_SHIFT: 16,
+            DOM_VK_CONTROL: 17,
+            DOM_VK_ALT: 18,
+            DOM_VK_PAUSE: 19,
+            DOM_VK_ESCAPE: 27,
+            DOM_VK_SPACE: 32,
+            DOM_VK_PAGE_UP: 33,
+            DOM_VK_PAGE_DOWN: 34,
+            DOM_VK_END: 35,
+            DOM_VK_HOME: 36,
+            DOM_VK_LEFT: 37,
+            DOM_VK_UP: 38,
+            DOM_VK_RIGHT: 39,
+            DOM_VK_DOWN: 40,
+            DOM_VK_INSERT: 45,
+            DOM_VK_DELETE: 46             
+        };
+}
 
 (function($) {
     JSimpleSpreadsheet = function(selector, options) {

@@ -112,6 +112,8 @@ var only_first = worksheet.getCell(['A1','C3']).getValue();
 
  
 ## Releases:
+* v3.0.2
+      - KeyEvent (IE Support)
 * v3.0.1
       - Fix cell.isEnabled;
       - Fix cell.isSelected
