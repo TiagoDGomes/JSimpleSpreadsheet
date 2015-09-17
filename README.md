@@ -59,11 +59,11 @@ worksheet.getCell(['C3','B4']).setValue('Both C3 and B4 setValue');
 // Getting value from A1
 var A1 = worksheet.getCell('A1').getValue();
 
-// Return only first element value (sorry!)
-var only_first = worksheet.getCell(['A1','C3']).getValue();      
-
 // Disabling C1 and A2
 worksheet.getCell(['C1','A2']).setEnabled(false);
+
+// Disabling A3 (forced)
+worksheet.getCell('A3').setEnabled(false, false);
 
 // Checking C1 if enabled
 var enabled = worksheet.getCell('C1').isEnabled();
@@ -71,6 +71,13 @@ var enabled = worksheet.getCell('C1').isEnabled();
 // Undo
 worksheet.getCell('B5').setValue('Undo test');
 worksheet.undo();
+
+
+// TO-DO: 
+// Return only first element value (sorry!)
+var only_first = worksheet.getCell(['A1','C3']).getValue();      
+
+
 
 ```
 
