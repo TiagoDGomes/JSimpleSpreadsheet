@@ -38,17 +38,21 @@ It's this!
 
 ### Javascript details:
 ```javascript
+
 var your_table_selector = '.this-is-a-example';
 
-var worksheet = new JSimpleSpreadsheet(your_table_selector, {					
+var worksheet = new JSimpleSpreadsheet(your_table_selector, {
+
     onFocus: function(colName, rowIndex, valueRaw){
         // Example - onFocus:
         alert('This is ' + colName + rowIndex + ' with focus!');
     },
+    
     onBlur: function(colName, rowIndex, valueRaw){						
         // Example - onFocus:
         alert('Bye ' + colName + rowIndex);
     },
+    
     onChange: function(colName, rowIndex, valueRaw, oldValueRaw, element){					
         // Example - onBlur:
         if (confirm('Accept ' + colName + rowIndex + ' with ' + valueRaw + '?')){
@@ -56,11 +60,14 @@ var worksheet = new JSimpleSpreadsheet(your_table_selector, {
         } else {
             return false;  // Undo changes
         }
-        
     },
+    
     theme: 'jsimplespreadsheet.theme.css',
-    trSelector: 'tr',    
+    
+    trSelector: 'tr',
+    
     tdSelector: 'td'
+    
 });
 
 // Setting value to A1
