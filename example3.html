@@ -7,7 +7,7 @@
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> 
         
-        <link rel="stylesheet" type="text/css" href="jquery.jsimplespreadsheet.css">
+        <link rel="stylesheet" type="text/css" href="jsimplespreadsheet.css">
         <script src="jsimplespreadsheet.js"></script>
         <script>
             var worksheet;
@@ -38,7 +38,7 @@ worksheet = new JSimpleSpreadsheet('.my-spreadsheet', {
          }
         
     },
-    theme: 'jquery.jsimplespreadsheet.theme.css' 
+    theme: 'jsimplespreadsheet.theme.css' 
 });
 worksheet.getCell('A1').setValue('This is A1');
 worksheet.getCell(['C3','B4']).setValue('Both C3 and B4 setValue');
