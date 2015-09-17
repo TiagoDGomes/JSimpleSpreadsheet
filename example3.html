@@ -45,8 +45,8 @@ worksheet.getCell(['C3','B4']).setValue('Both C3 and B4 setValue');
 console.log(worksheet.getCell('A1').getValue());
 console.log(worksheet.getCell(['A1','C3']).getValue());      // Return only first element value
 
-worksheet.getCell(['C1','A2']).setValue('disabling...');
-worksheet.getCell(['C1','A2']).setEnabled(false);
+worksheet.getCell(['C1','B6']).setValue('disabling...');
+worksheet.getCell(['C1','B6']).setEnabled(false);
 
 
 worksheet.getCell('total').setValue('1000');      
@@ -68,13 +68,13 @@ console.log(worksheet.getCell('total').getValue());
                     <th>1</th><td></td><td></td><td></td>                        
                 </tr>                                            
                 <tr>                                                         
-                    <th>2</th><td></td><td></td><td data-disabled>disabled in HTML code</td>                        
+                    <th>2</th><td></td><td></td><td data-disabled>disabled cell in HTML code</td>                        
                 </tr>                                            
                 <tr>                                                         
-                    <th>3</th><td></td><td></td><td></td>                         
+                    <th>3</th><td></td><td>Hey!!!</td><td></td>                         
                 </tr>                                            
                 <tr>                                                         
-                    <th>4</th><td></td><td></td><td></td>                     
+                    <th>4</th><td>Nothing here</td><td></td><td></td>                     
                 </tr>                                            
                 <tr>                                                         
                     <th>5</th><td></td><td></td><td></td>                       
