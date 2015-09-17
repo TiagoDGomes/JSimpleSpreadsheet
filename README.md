@@ -82,7 +82,7 @@ var only_first = worksheet.getCell(['A1','C3']).getValue();
 ```
 
 ```html
-<table border="1" class=".this-is-a-example">                    
+<table border="1" class="this-is-a-example">                    
   <tbody>
       <tr>
           <th>&nbsp;</th><th>A</th><th>B</th><th>C</th>
