@@ -36,6 +36,7 @@ It's this!
 
 ## Full usage examples:
 
+### Javascript details:
 ```javascript
 var your_table_selector = '.this-is-a-example';
 
@@ -91,7 +92,35 @@ var only_first = worksheet.getCell(['A1','C3']).getValue();
 
 ```
 
- 
+### HTML details:
+
+```html
+<table border="1" class="this-is-a-example">                    
+  <tbody>
+      <tr>
+          <th>&nbsp;</th><th>A</th><th>B</th><th>C</th>
+      </tr>
+      <tr>                                                         
+          <th>1</th><td></td><td></td><td></td>                        
+      </tr>                                            
+      <tr>                                                         
+          <th>2</th><td></td><td></td><td data-disabled>disabled in HTML code</td>                        
+      </tr>                                            
+      <tr>                                                         
+          <th>3</th><td></td><td>This is B3</td><td></td>                         
+      </tr>                                            
+      <tr>                                                         
+          <th>4</th><td></td><td></td><td></td>                     
+      </tr>                                            
+      <tr>                                                         
+          <th>5</th><td></td><td></td><td></td>                       
+      </tr>                                        
+      <tr>
+          <th>6</th><td></td><td></td><td data-name="total">The input will be named 'total'</td>                      
+      </tr>  
+  </tbody>
+</table> 
+``` 
 ## Releases:
 * v3.0.3
       - Changed 'dataset' to jQuery.data() (IE Support)
