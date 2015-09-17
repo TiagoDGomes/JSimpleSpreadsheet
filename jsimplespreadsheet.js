@@ -1,5 +1,5 @@
 /**
- * jSimpleSpreadsheet 3.0.2
+ * jSimpleSpreadsheet 3.0.3
  * @author Tiago Donizetti Gomes (https://github.com/TiagoDGomes/jSimpleSpreadsheet)
  *  
  * This program is free software: you can redistribute it and/or modify
@@ -50,7 +50,11 @@ if (typeof KeyEvent === "undefined") {
             DOM_VK_DELETE: 46             
         };
 }
-
+if(typeof String.prototype.trim !== 'function') {
+  String.prototype.trim = function() {
+    return this.replace(/^\s+|\s+$/g, ''); 
+  }
+}
 (function($) {
     JSimpleSpreadsheet = function(selector, options) {
         this._undoList = [];
@@ -105,11 +109,11 @@ if (typeof KeyEvent === "undefined") {
 
                 inputText.value = valueRaw;
                 inputText.type = 'text';
-                inputText.dataset.cellname = colName + rowIndex;
-                inputText.dataset.colname = colName;
-                inputText.dataset.col = colIndex;
-                inputText.dataset.row = rowIndex;
-                inputText.dataset.value = valueRaw;
+                $(inputText).data('cellname', colName + rowIndex);
+                $(inputText).data('colname', colName);
+                $(inputText).data('col', colIndex);
+                $(inputText).data('row', rowIndex);
+                $(inputText).data('value', valueRaw);
                 inputText.className = 'value cell ' +
                         colName + rowIndex + ' ' +
                         selectorCellIndex + ' ' +
@@ -118,7 +122,7 @@ if (typeof KeyEvent === "undefined") {
                 $(inputText).addClass(inputText.name.toLowerCase());
 
 
-                spanText.dataset.cellname = inputText.dataset.cellname;
+                $(spanText).data('cellname', colName + rowIndex);
                 spanText.className = inputText.className;
 
 
@@ -195,9 +199,9 @@ if (typeof KeyEvent === "undefined") {
          */
 
         $(tableSelector + ' input').keydown(function(event) {
-            var colIndex = this.dataset.col;
-            var rowIndex = this.dataset.row;
-
+            var colIndex = $(this).data('col');
+            var rowIndex = $(this).data('row');
+            
             var nextCol = colIndex;
             var nextRow = rowIndex;
 
@@ -283,10 +287,10 @@ if (typeof KeyEvent === "undefined") {
             return $(jssObject.selector + ' span.' + cellName);
         };
         this.getColName = function() {
-            return this.getInputText().dataset.colname;
+            return this.getInputTextJQ().data('colname');
         };
         this.getRowIndex = function() {
-            return thisCell.getInputText().dataset.row;
+            return thisCell.getInputTextJQ().data('row');
         }
         this.getValue = function() {
             return thisCell.getInputText().value;
@@ -306,13 +310,13 @@ if (typeof KeyEvent === "undefined") {
         };
         this.setSelected = function(select) {
             if (select) {
-                thisCell.getInputText().focus();
+                thisCell.getInputTextJQ().focus();
             } else {
-                thisCell.getInputText().blur();
+                thisCell.getInputTextJQ().blur();
             }
         };
         this.restoreDataValue = function() {
-            var dataValue = thisCell.getInputText().dataset.value;
+            var dataValue = thisCell.getInputTextJQ().data('value');
             thisCell.getInputText().value = dataValue;
             thisCell.getSpanText().text(dataValue);
             return dataValue;
@@ -438,3 +442,4 @@ function jss_includeCSS(css, media){
     }
     document.getElementsByTagName("head")[0].appendChild(link);
 }
+
