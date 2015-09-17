@@ -1,5 +1,5 @@
 /**
- * jSimpleSpreadsheet 3.0
+ * jSimpleSpreadsheet 3.0.1
  * @author Tiago Donizetti Gomes (https://github.com/TiagoDGomes/jSimpleSpreadsheet)
  *  
  * This program is free software: you can redistribute it and/or modify
@@ -30,14 +30,11 @@ var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
         var settings = $.extend({
             onFocus: function(colName, rowIndex, element) {
                 // nothing
-                console.log('onFocus default ');
             },
             onBlur: function(colName, rowIndex, element) {
                 // nothing
-                console.log('onBlur default ');
             },
             onChange: function(colName, rowIndex, valueRaw, oldValueRaw, element) {
-                console.log('onChange default ');
                 return true;
             },
             theme: null,
@@ -124,7 +121,6 @@ var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
         $(tableSelector + ' input[type="text"]').focus(function() {
             var colName = $(this).data('colname');
             var rowIndex = $(this).data('row');
-            console.log('onFocus trigger: ' + colName + rowIndex);
             $(this).addClass(JSS_FOCUS_SELECTOR);
             settings.onFocus(colName, rowIndex, this);
             settings._selected = this;
@@ -141,9 +137,7 @@ var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
             var colName = $(this).data('colname');
             var rowIndex = $(this).data('row');
             var oldValueRaw = $(this).data('value');
-            console.log('onChange trigger: ' + colName + rowIndex);
             var ret = settings.onChange(colName, rowIndex, this.value, oldValueRaw, this);
-            console.log(ret);
             var cell = jssObject.getCell(colName + rowIndex);
             if (ret === false) {
                 cell.restoreDataValue(colName + rowIndex);
@@ -160,7 +154,6 @@ var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
         $(tableSelector + " input").blur(function() {
             var colName = $(this).data('colname');
             var rowIndex = $(this).data('row');
-            console.log('onBlur trigger: ' + colName + rowIndex);
             $(this).removeClass(JSS_FOCUS_SELECTOR);
             settings.onBlur(colName, rowIndex, this);
 
@@ -226,7 +219,6 @@ var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
          * @returns {Number|_L25.JSimpleSpreadsheet._undoList.length}
          */
         this.undo = function() {
-            console.log('undo');
             if (jssObject._undoList.length > 0) {
                 var cellItem = jssObject._undoList.pop();
                 var tableSelector = cellItem[0];
@@ -255,49 +247,38 @@ var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
          * @returns {inputText}
          */
         this.getInputTextJQ = function() {
-            console.log('getCell("' + cellName + '").getInputText()');
             var selector = jss_getCellInputSelector(jssObject.selector, cellName);
-            console.log('getCell selector: ' + selector);
             return $(selector);
         };
         this.getInputText = function() {            
             return thisCell.getInputTextJQ()[0];
         };
         this.getSpanText = function() {
-            console.log('getCell("' + cellName + '").getSpanText()');
             return $(jssObject.selector + ' span.' + cellName);
         };
         this.getColName = function() {
-            console.log('getCell("' + cellName + '").getColName()');
             return this.getInputText().dataset.colname;
         };
         this.getRowIndex = function() {
-            console.log('getCell("' + cellName + '").getRowIndex()');
             return thisCell.getInputText().dataset.row;
         }
         this.getValue = function() {
-            console.log('getCell("' + cellName + '").getValue()');
             return thisCell.getInputText().value;
             //return jss_cellValue(jssObject, cellName);
         };
         this.setValue = function(cellValue) {
-            console.log('getCell("' + cellName + '").setValue("' + cellValue + '")');
             return jss_cellValue(jssObject, cellName, cellValue);
         };
         this.isEnabled = function() {
-            console.log('getCell("' + cellName + '").isEnabled()');
             return jss_enableCell(jssObject.selector, cellName, value);
         };
         this.setEnabled = function(value, dontForce) {
-            console.log('getCell("' + cellName + '").setEnabled(' + value + ',' + dontForce + ')');
             return jss_enableCell(jssObject.selector, cellName, value, dontForce);
         };
         this.isSelected = function() {
-            console.log('getCell("' + cellName + '").isSelected()');
             return thisCell.getInputTextJQ().hasClass(JSS_FOCUS_SELECTOR);
         };
         this.setSelected = function(select) {
-            console.log('getCell("' + cellName + '").setSelected("' + select + '")');
             if (select) {
                 thisCell.getInputText().focus();
             } else {
