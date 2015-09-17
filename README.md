@@ -1,8 +1,9 @@
 # jSimpleSpreadsheet
      
-
+(en)
 Simple, easy and uncomplicated. Your HTML tables are navigable and editable (like a spreadsheet).
 
+(pt)
 Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáveis (como uma planilha).
 
 ## Simple usage:
@@ -13,14 +14,7 @@ var your_table_selector = '.this-is-a-example';
 var worksheet = new JSimpleSpreadsheet(your_table_selector);
 
 ```
-or
 
-```javascript
-var your_table_selector = '.this-is-a-example';
-
-$(your_table_selector).jSimpleSpreadsheet();
-
-```
 
 ## Full usage examples:
 
@@ -72,57 +66,12 @@ worksheet.undo();
 
 
 ```
-
-#### Classical jQueryUI Widget usage:
-
-```javascript
-var your_table_selector = '.this-is-a-example';
-
-$(your_table_selector).jSimpleSpreadsheet({					
-        onFocus: function(colName, rowIndex, element){
-            // Example - onFocus:
-            alert('This is ' + colName + rowIndex + ' with focus!');
-        },
-        onBlur: function(colName, rowIndex, element){						
-            // Example - onBlur:
-            alert('Bye ' + colName + rowIndex);
-        },
-        onChange: function(colName, rowIndex, valueRaw, oldValueRaw, element){
-            // Example - onChange:
-            if (confirm('Accept ' + colName + rowIndex + ' with ' + valueRaw + '?')){
-                return true;
-            } else {
-                return false;  // Undo changes
-            }
-            //
-        },
-        theme:      'jquery.jsimplespreadsheet.theme.css',      // CSS file       
-        trSelector: 'tr',                                       // Row tag
-        tdSelector: 'td',                                       // Cell tag
-});
-
-var contentA5 = $(your_table_selector).jSimpleSpreadsheet('cell','A5');      // get A5  
-
-$(your_table_selector).jSimpleSpreadsheet('cell','B1', 'foo');               // writing 
-$(your_table_selector).jSimpleSpreadsheet('cell','B6', 'writing in B6');     // writing   
-$(your_table_selector).jSimpleSpreadsheet('cell','C3', "<b>Don't use HTML code here</b>");     // writing   
-$(your_table_selector).jSimpleSpreadsheet('cell','A2', null);                // set null
-$(your_table_selector).jSimpleSpreadsheet('enableCell','B6', true);          // enabling B6 
-$(your_table_selector).jSimpleSpreadsheet('enableCell','c6', false);         // disabling C6
-$(your_table_selector).jSimpleSpreadsheet('enableCell','A4', false, false);  // force A4 disable
-
-$(your_table_selector).jSimpleSpreadsheet('cell','B5', 'Undo test'); 
-$(your_table_selector).jSimpleSpreadsheet('undo');  // Undo B5
-
-var selected = $(your_table_selector).jSimpleSpreadsheet('selected');        // selected
-
-alert(contentA5);
-alert('Selected: ' + $(selected).data('cellname'));   
-
-```
-
+ 
 ## Releases:
 
+* v3.0
+      - Removed jQueryUI dependencies;
+      - Removed jQuery syntax support;      
 * v2.1.1
       - Add 'undo' in JSimpleSpreadsheet object
 * v2.1
