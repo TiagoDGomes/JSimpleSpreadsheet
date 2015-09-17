@@ -68,7 +68,9 @@ worksheet.undo();
 ```
  
 ## Releases:
-
+* v3.0.1
+      - Fix cell.isEnabled;
+      - Fix cell.isSelected
 * v3.0
       - Removed jQueryUI dependencies;
       - Removed jQuery syntax support;      

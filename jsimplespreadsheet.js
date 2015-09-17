@@ -254,11 +254,14 @@ var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
          * 
          * @returns {inputText}
          */
-        this.getInputText = function() {
+        this.getInputTextJQ = function() {
             console.log('getCell("' + cellName + '").getInputText()');
             var selector = jss_getCellInputSelector(jssObject.selector, cellName);
             console.log('getCell selector: ' + selector);
-            return $(selector)[0];
+            return $(selector);
+        };
+        this.getInputText = function() {            
+            return thisCell.getInputTextJQ()[0];
         };
         this.getSpanText = function() {
             console.log('getCell("' + cellName + '").getSpanText()');
@@ -282,16 +285,16 @@ var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
             return jss_cellValue(jssObject, cellName, cellValue);
         };
         this.isEnabled = function() {
-            console.log('!! getCell("' + cellName + '").isEnabled()');
-
+            console.log('getCell("' + cellName + '").isEnabled()');
+            return jss_enableCell(jssObject.selector, cellName, value);
         };
         this.setEnabled = function(value, dontForce) {
             console.log('getCell("' + cellName + '").setEnabled(' + value + ',' + dontForce + ')');
             return jss_enableCell(jssObject.selector, cellName, value, dontForce);
         };
         this.isSelected = function() {
-            console.log('!! getCell("' + cellName + '").isSelected()');
-
+            console.log('getCell("' + cellName + '").isSelected()');
+            return thisCell.getInputTextJQ().hasClass(JSS_FOCUS_SELECTOR);
         };
         this.setSelected = function(select) {
             console.log('getCell("' + cellName + '").setSelected("' + select + '")');
@@ -300,7 +303,6 @@ var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
             } else {
                 thisCell.getInputText().blur();
             }
-
         };
         this.restoreDataValue = function() {
             var dataValue = thisCell.getInputText().dataset.value;
