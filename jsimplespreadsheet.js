@@ -23,38 +23,6 @@ var JSS_FOCUS_SELECTOR = 'focus';
 var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
 
 
-// IE Support:
-if (typeof KeyEvent === "undefined") {
-        var KeyEvent = {
-            DOM_VK_CANCEL: 3,
-            DOM_VK_BACK_SPACE: 8,
-            DOM_VK_TAB: 9,
-            DOM_VK_CLEAR: 12,
-            DOM_VK_RETURN: 13,
-            DOM_VK_ENTER: 14,
-            DOM_VK_SHIFT: 16,
-            DOM_VK_CONTROL: 17,
-            DOM_VK_ALT: 18,
-            DOM_VK_PAUSE: 19,
-            DOM_VK_ESCAPE: 27,
-            DOM_VK_SPACE: 32,
-            DOM_VK_PAGE_UP: 33,
-            DOM_VK_PAGE_DOWN: 34,
-            DOM_VK_END: 35,
-            DOM_VK_HOME: 36,
-            DOM_VK_LEFT: 37,
-            DOM_VK_UP: 38,
-            DOM_VK_RIGHT: 39,
-            DOM_VK_DOWN: 40,
-            DOM_VK_INSERT: 45,
-            DOM_VK_DELETE: 46             
-        };
-}
-if(typeof String.prototype.trim !== 'function') {
-  String.prototype.trim = function() {
-    return this.replace(/^\s+|\s+$/g, ''); 
-  }
-}
 (function($) {
     JSimpleSpreadsheet = function(selector, options) {
         this._undoList = [];
@@ -201,7 +169,7 @@ if(typeof String.prototype.trim !== 'function') {
         $(tableSelector + ' input').keydown(function(event) {
             var colIndex = $(this).data('col');
             var rowIndex = $(this).data('row');
-            
+
             var nextCol = colIndex;
             var nextRow = rowIndex;
 
@@ -238,7 +206,7 @@ if(typeof String.prototype.trim !== 'function') {
         });
         /**
          * 
-         * @param {type} cellName
+         * @param {String} cellName
          * @returns {_L25.JSimpleSpreadsheetCell}
          */
         this.getCell = function(cellName) {
@@ -272,15 +240,12 @@ if(typeof String.prototype.trim !== 'function') {
 
     JSimpleSpreadsheetCell = function(jssObject, cellName) {
         var thisCell = this;
-        /**
-         * 
-         * @returns {inputText}
-         */
+
         this.getInputTextJQ = function() {
             var selector = jss_getCellInputSelector(jssObject.selector, cellName);
             return $(selector);
         };
-        this.getInputText = function() {            
+        this.getInputText = function() {
             return thisCell.getInputTextJQ()[0];
         };
         this.getSpanText = function() {
@@ -291,10 +256,9 @@ if(typeof String.prototype.trim !== 'function') {
         };
         this.getRowIndex = function() {
             return thisCell.getInputTextJQ().data('row');
-        }
+        };
         this.getValue = function() {
             return thisCell.getInputText().value;
-            //return jss_cellValue(jssObject, cellName);
         };
         this.setValue = function(cellValue) {
             return jss_cellValue(jssObject, cellName, cellValue);
@@ -320,10 +284,8 @@ if(typeof String.prototype.trim !== 'function') {
             thisCell.getInputText().value = dataValue;
             thisCell.getSpanText().text(dataValue);
             return dataValue;
-        }
-
+        };
     };
-
 }(jQuery));
 
 /**
@@ -392,17 +354,18 @@ function jss_getCellInputSelector(tableSelector, cellName) {
 function jss_getCellSpanSelector(tableSelector, cellName) {
     return jss_getCellSelector(tableSelector, cellName, 'span');
 }
-function jss_cellValue(jssObject, cellName, cellValue){
+
+function jss_cellValue(jssObject, cellName, cellValue) {
     var selectorTextInput = jss_getCellInputSelector(jssObject.selector, cellName);
-    var selectorTextSpan  = jss_getCellSpanSelector(jssObject.selector, cellName);
+    var selectorTextSpan = jss_getCellSpanSelector(jssObject.selector, cellName);
     var jqTextInput = $(selectorTextInput);
-    if (cellValue !== undefined){
+    if (cellValue !== undefined) {
         jssObject._undoList.push([jssObject.selector, cellName, $(selectorTextInput).data('value')]);
         jqTextInput.val(cellValue);
         jqTextInput.data('value', cellValue);
     }
-    $(selectorTextSpan).text(jqTextInput.val());    
-    return jqTextInput.val(); 
+    $(selectorTextSpan).text(jqTextInput.val());
+    return jqTextInput.val();
 }
 function jss_enableCell(tableSelector, cellName, enable, dontForce) {
     var selectorTextInput = jss_getCellInputSelector(tableSelector, cellName);
@@ -432,14 +395,46 @@ function jss_enableCell(tableSelector, cellName, enable, dontForce) {
     return jqTextInput.val();
 
 }
-function jss_includeCSS(css, media){
+function jss_includeCSS(css, media) {
     var link = document.createElement("link");
     link.href = css;
     link.type = "text/css";
     link.rel = "stylesheet";
-    if (media !== undefined){
+    if (media !== undefined) {
         link.media = media;
     }
     document.getElementsByTagName("head")[0].appendChild(link);
 }
 
+// IE Support:
+if (typeof KeyEvent === "undefined") {
+    var KeyEvent = {
+        DOM_VK_CANCEL: 3,
+        DOM_VK_BACK_SPACE: 8,
+        DOM_VK_TAB: 9,
+        DOM_VK_CLEAR: 12,
+        DOM_VK_RETURN: 13,
+        DOM_VK_ENTER: 14,
+        DOM_VK_SHIFT: 16,
+        DOM_VK_CONTROL: 17,
+        DOM_VK_ALT: 18,
+        DOM_VK_PAUSE: 19,
+        DOM_VK_ESCAPE: 27,
+        DOM_VK_SPACE: 32,
+        DOM_VK_PAGE_UP: 33,
+        DOM_VK_PAGE_DOWN: 34,
+        DOM_VK_END: 35,
+        DOM_VK_HOME: 36,
+        DOM_VK_LEFT: 37,
+        DOM_VK_UP: 38,
+        DOM_VK_RIGHT: 39,
+        DOM_VK_DOWN: 40,
+        DOM_VK_INSERT: 45,
+        DOM_VK_DELETE: 46
+    };
+}
+if (typeof String.prototype.trim !== 'function') {
+    String.prototype.trim = function() {
+        return this.replace(/^\s+|\s+$/g, '');
+    }
+}
