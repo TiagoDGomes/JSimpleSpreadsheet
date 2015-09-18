@@ -1,5 +1,5 @@
 /**
- * jSimpleSpreadsheet 3.1.1
+ * jSimpleSpreadsheet 3.2
  * @author Tiago Donizetti Gomes (https://github.com/TiagoDGomes/jSimpleSpreadsheet)
  *  
  * This program is free software: you can redistribute it and/or modify
@@ -78,7 +78,9 @@ function log(obj) {
                     var labelText = document.createElement('label');
                     var jqInputItem = $(inputItem);
                     var jqLabelText = $(labelText);
+                    var selectorAllowHide = '';
                     switch (jqTRElement.data('type')) {
+
                         case 'checkbox':
                         case 'boolean':
                             inputItem = document.createElement('input');
@@ -88,13 +90,14 @@ function log(obj) {
                                 labelText.htmlFor = jqTRElement.data('id');
                             }
                             dataType = 'boolean';
+
                             break;
                         case 'string':
                         default:
                             inputItem = document.createElement('input');
                             inputItem.value = valueRaw;
                             inputItem.type = 'text';
-
+                            selectorAllowHide = 'allow_hide_on_disabled';
                     }
                     inputItem.name = jqTRElement.data('name') !== undefined ? jqTRElement.data('name') : colName + rowIndex + '_' + colName + '_' + rowIndex;
                     inputItem.className = 'value cell ' +
@@ -115,6 +118,7 @@ function log(obj) {
                     jqInputItem.data('value', valueRaw);
                     jqInputItem.addClass(inputItem.name.toLowerCase());
                     jqInputItem.addClass(dataType);
+                    jqInputItem.addClass(selectorAllowHide);
                     jqInputItem.addClass('jss_input')
                     jqLabelText.addClass('jss_label')
                     jqLabelText.data('cellname', colName + rowIndex);
@@ -170,12 +174,18 @@ function log(obj) {
             var colName = jqInputItem.data('colname');
             var rowIndex = jqInputItem.data('row');
             var oldValueRaw = jqInputItem.data('value');
-            var ret = jssObject.settings.onChange(colName, rowIndex, this.value, oldValueRaw, this);
+            var valueRaw;
+            if (jqInputItem.hasClass('boolean')) {
+                valueRaw = this.checked;
+            } else {
+                valueRaw = this.value;
+            }
+            var ret = jssObject.settings.onChange(colName, rowIndex, valueRaw, oldValueRaw, this);
             var cell = jssObject.getCell(colName + rowIndex);
             if (ret === false) {
                 cell.restoreDataValue(colName + rowIndex);
             } else {
-                cell.setValue(this.value);
+                cell.setValue(valueRaw);
             }
         });
 
@@ -355,11 +365,21 @@ function log(obj) {
             if (jqInputItem.length > 1) {
                 var ret = [];
                 jqInputItem.each(function() {
-                    ret.push(this.value);
+                    if ($(this).hasClass('boolean')) {
+                        ret.push(this.checked);
+                    } else {
+                        ret.push(this.value);
+                    }
+
                 });
                 return ret;
-            } else {
-                return thisCell.getInputItem().val();
+            } else if (jqInputItem.length === 1) {
+                if (jqInputItem.hasClass('boolean')) {
+                    return thisCell.getInputItem().prop('checked');
+                } else {
+                    return thisCell.getInputItem().val();
+                }
+
             }
         };
 
@@ -371,9 +391,13 @@ function log(obj) {
             var jqInputItem = thisCell.getInputItem();
             cellValue = typeof cellValue === 'undefined' ? '' : cellValue;
             jssObject._undoList.push([jssObject.selector, cellName, jqInputItem.data('value')]);
-            jqInputItem.val(cellValue);
+            if (jqInputItem.hasClass('boolean')) {
+                jqInputItem.prop('checked', cellValue);
+            } else {
+                jqInputItem.val(cellValue);
+                thisCell.getLabelText().text(jqInputItem.val());
+            }
             jqInputItem.data('value', cellValue);
-            thisCell.getLabelText().text(jqInputItem.val());
             return cellValue;
         };
         /**
@@ -381,27 +405,25 @@ function log(obj) {
          * @returns {String}
          */
         this.isEnabled = function() {
-            return thisCell.getInputItem().data('disabled') === undefined;
+            return thisCell.getInputItem().prop('disabled') === undefined;
         };
         this.setEnabled = function(enable, dontForce) {
             var jqInputItem = thisCell.getInputItem();
             var jqTextLabel = thisCell.getLabelText();
-            if (enable) {
-                jqInputItem.show();
-                jqInputItem.prop('disabled', '');
-                jqInputItem.data('disabled', undefined);
-                jqTextLabel.hide();
-            } else {
-                if (dontForce === undefined || dontForce === true) {
-                    jqInputItem.hide();
-                    jqTextLabel.show();
-                } else {
-                    jqInputItem.prop('disabled', true);
-                    jqInputItem.show();
+            jqInputItem.show();
+            jqTextLabel.show();
+            if (jqInputItem.hasClass('allow_hide_on_disabled')) {
+                if (enable) {
                     jqTextLabel.hide();
+                } else {
+                    if (dontForce === undefined || dontForce === true || jqInputItem.hasClass('string')) {
+                        jqInputItem.hide();
+                    } else {
+                        jqTextLabel.hide();
+                    }
                 }
-                jqInputItem.data('disabled', true);
             }
+            jqInputItem.prop('disabled', !enable);
             return enable;
         };
         /**
@@ -429,9 +451,14 @@ function log(obj) {
          * @returns {String}
          */
         this.restoreDataValue = function() {
-            var dataValue = thisCell.getInputItem().data('value');
-            thisCell.getInputItem().val(dataValue);
-            thisCell.getLabelText().text(dataValue);
+            var jqInputItem = thisCell.getInputItem();
+            var dataValue = jqInputItem.data('value');
+            if (jqInputItem.hasClass('boolean')){
+                jqInputItem.prop('checked' , dataValue);                         
+            } else {
+                jqInputItem.val(dataValue);
+                thisCell.getLabelText().text(dataValue);   
+            }
             return dataValue;
         };
     };
