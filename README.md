@@ -79,8 +79,8 @@ worksheet.getCell(['C3','B4']).setValue('Both C3 and B4 setValue');
 // Getting value from A1
 var A1 = worksheet.getCell('A1').getValue();
 
-// Getting value from cell named 'total'
-var total = worksheet.getCell('total').getValue();
+// Getting a array of values
+var my_array = worksheet.getCell(['A1','C3']).getValue();      
 
 // Disabling C1 and A2
 worksheet.getCell(['C1','A2']).setEnabled(false);
@@ -95,9 +95,12 @@ var enabled = worksheet.getCell('C1').isEnabled();
 worksheet.getCell('B5').setValue('Undo test');
 worksheet.undo();
 
-// TO-DO: 
-// Return only first element value (sorry!)
-var only_first = worksheet.getCell(['A1','C3']).getValue();      
+// ---------
+//   TO-DO: 
+// ---------
+
+// Feature: set format
+// worksheet.getCell('A4').setFormat(Number);     
 
 
 ```
@@ -123,7 +126,7 @@ var only_first = worksheet.getCell(['A1','C3']).getValue();
           <th>4</th><td></td><td></td><td></td>                     
       </tr>                                            
       <tr>                                                         
-          <th>5</th><td></td><td></td><td></td>                       
+          <th>5</th><td></td><td data-ignore><b>Ignore this cell</b></td><td></td>                     
       </tr>                                        
       <tr>
           <th>6</th><td></td><td></td><td data-name="total">The input will be named 'total'</td>                      
@@ -132,26 +135,34 @@ var only_first = worksheet.getCell(['A1','C3']).getValue();
 </table> 
 ``` 
 ## Releases:
+* v3.1
+      - Added options to JSimpleSpreadsheet: <code>cellClassSelectorPreffix</code>, <code>focusClassSelector</code>, <code>defaultClass;
+      - Removed global variables: JSS_RUNTIME_SELECTOR, JSS_FOCUS_SELECTOR, JSS_CELL_SELECTOR_PREFFIX 
+      - Changed: <code>'jss_*'</code> functions to object functions;
+      - Changed: <code>String.prototype.trim</code> to <code>$.trim()</code>
+      - Changed: themes ('jSimpleSpreadsheet-runner' to 'jss_default_class') 
+      - Bugfix: colIndex and rowIndex < 0 ('move to cell' code)
+      - Added: data-ignore
 * v3.0.3
-      - Changed 'dataset' to jQuery.data() (IE Support)
+      - Changed <code>'dataset'</code> to <code>jQuery.data()</code> (IE Support)
 * v3.0.2
       - KeyEvent (IE Support)
 * v3.0.1
-      - Fix cell.isEnabled;
-      - Fix cell.isSelected
+      - Bugfix: <code>cell.isEnabled</code>;
+      - Bugfix: <code>cell.isSelected</code>
 * v3.0
       - Removed jQueryUI dependencies;
       - Removed jQuery syntax support;      
 * v2.1.1
-      - Add 'undo' in JSimpleSpreadsheet object
+      - Added 'undo' in JSimpleSpreadsheet object
 * v2.1
       - JSimpleSpreadsheet object
 * v2.0.1
       - Minimal changes
 * v2.0
-      - Add full 'undo' support (<code>$(your_table_selector).jSimpleSpreadsheet('undo')</code> )
+      - Added full 'undo' support (<code>$(your_table_selector).jSimpleSpreadsheet('undo')</code> )
       - Clean code
-      - Add event: onChange
+      - Added event: onChange
       - Modify <code>onBlur: function(colName, rowIndex, element){} </code>
       - Any tag support ('trSelector' and 'tdSelector' options)
 * v1.1.3
@@ -167,6 +178,6 @@ var only_first = worksheet.getCell(['A1','C3']).getValue();
       - Removed 'change' option;
       - Added 'selected' option;
       - Added wrapper functions 'jSimpleSpreadsheet_';
-      - Fix 'undo' in 'onBlur' return false 
+      - Bugfix: 'undo' in 'onBlur' return false 
 * v1.0 
       - First release. 

@@ -1,5 +1,5 @@
 /**
- * jSimpleSpreadsheet 3.0.3
+ * jSimpleSpreadsheet 3.1
  * @author Tiago Donizetti Gomes (https://github.com/TiagoDGomes/jSimpleSpreadsheet)
  *  
  * This program is free software: you can redistribute it and/or modify
@@ -18,17 +18,19 @@
  */
 var JSimpleSpreadsheet;
 var JSimpleSpreadsheetCell;
-var JSS_RUNTIME_SELECTOR = 'jSimpleSpreadsheet-runner';
-var JSS_FOCUS_SELECTOR = 'focus';
-var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
 
+function log(obj) {
+    console.log(obj);
+}
 
 (function($) {
-    JSimpleSpreadsheet = function(selector, options) {
+    JSimpleSpreadsheet = function(tableSelector, options) {
         this._undoList = [];
-        this.selector = selector;
+        this.colLength = 0;
+        this.rowLength = 0;
+        this.selector = tableSelector;
         var jssObject = this;
-        var settings = $.extend({
+        this.settings = $.extend({
             onFocus: function(colName, rowIndex, element) {
                 // nothing
             },
@@ -40,91 +42,103 @@ var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
             },
             theme: null,
             trSelector: 'tr',
-            tdSelector: 'td'
+            tdSelector: 'td',
+            cellClassSelectorPreffix: 'cell_',
+            focusClassSelector: 'focus',
+            defaultClass: 'jss_default_class'
 
         }, options);
 
-        var tableSelector = JSS_RUNTIME_SELECTOR + '-' + _jss_rnd();
-        $(selector).addClass(tableSelector);
-        $(selector).addClass(JSS_RUNTIME_SELECTOR);
+        $(tableSelector).addClass(this.settings.defaultClass);
 
-        tableSelector = '.' + tableSelector;
 
-        if (settings.theme !== null) {
-            jss_includeCSS(settings.theme);
+        if (jssObject.settings.theme !== null) {
+            jss_includeCSS(jssObject.settings.theme);
         }
 
         var colIndex = 1;
         var rowIndex = 0;
 
-        $(tableSelector + ' ' + settings.trSelector).each(function() {
-            $(this).children(settings.tdSelector).each(function() {
-                $(this).addClass('cell');
-                var valueRaw = $(this).text().trim();
-                var colName = String.fromCharCode(colIndex + 64);
+        $(tableSelector + ' ' + jssObject.settings.trSelector).each(function() {
+            $(this).children(jssObject.settings.tdSelector).each(function() {
+                if ($(this).data('ignore') === undefined) {
+                    $(this).addClass('cell');
+                    var valueRaw = $.trim($(this).text());
+                    var colName = String.fromCharCode(colIndex + 64);
 
-                var selectorCellName = JSS_CELL_SELECTOR_PREFFIX + colName + rowIndex;
-                var selectorCellName_ = JSS_CELL_SELECTOR_PREFFIX + colName + "_" + rowIndex;
-                var selectorCellIndex = JSS_CELL_SELECTOR_PREFFIX + colIndex + '_' + rowIndex;
+                    var selectorCellName = jssObject.settings.cellClassSelectorPreffix + colName + rowIndex;
+                    var selectorCellName_ = jssObject.settings.cellClassSelectorPreffix + colName + "_" + rowIndex;
+                    var selectorCellIndex = jssObject.settings.cellClassSelectorPreffix + colIndex + '_' + rowIndex;
 
-                this.innerHTML = '';
+                    this.innerHTML = '';
+                    var inputItem;
+                    switch ($(this).data('type')) {
+                        case 'text':
+                        default:
+                            inputItem = document.createElement('input');
+                            inputItem.name = $(this).data('name') !== undefined ? $(this).data('name') : colName + rowIndex + '_' + colName + '_' + rowIndex;
 
-                var inputText = document.createElement('input');
-                var spanText = document.createElement('span');
+                            inputItem.value = valueRaw;
+                            inputItem.type = 'text';
 
-                inputText.name = $(this).data('name') !== undefined ? $(this).data('name') : colName + rowIndex + '_' + colName + '_' + rowIndex;
-
-
-                inputText.value = valueRaw;
-                inputText.type = 'text';
-                $(inputText).data('cellname', colName + rowIndex);
-                $(inputText).data('colname', colName);
-                $(inputText).data('col', colIndex);
-                $(inputText).data('row', rowIndex);
-                $(inputText).data('value', valueRaw);
-                inputText.className = 'value cell ' +
-                        colName + rowIndex + ' ' +
-                        selectorCellIndex + ' ' +
-                        selectorCellName + ' ' +
-                        selectorCellName_;
-                $(inputText).addClass(inputText.name.toLowerCase());
+                            inputItem.className = 'value cell ' +
+                                    selectorCellIndex + ' ' +
+                                    selectorCellName + ' ' +
+                                    selectorCellName_;
 
 
-                $(spanText).data('cellname', colName + rowIndex);
-                spanText.className = inputText.className;
+                    }
 
+                    var spanText = document.createElement('span');
+                    spanText.className = inputItem.className;
 
-                this.appendChild(inputText);
-                this.appendChild(spanText);
+                    this.appendChild(inputItem);
+                    this.appendChild(spanText);
 
-                if ($(this).data('disabled') === undefined) {
-                    $(inputText).show();
-                    $(spanText).hide();
-                } else {
-                    $(inputText).hide();
-                    $(spanText).show();
+                    var jqSpanText = $(spanText);
+                    var jqInputItem = $(inputItem);
+                    jqInputItem.data('cellname', colName + rowIndex);
+                    jqInputItem.data('colname', colName);
+                    jqInputItem.data('col', colIndex);
+                    jqInputItem.data('row', rowIndex);
+                    jqInputItem.data('value', valueRaw);
+                    jqInputItem.addClass(inputItem.name.toLowerCase());
+                    jqInputItem.addClass('jss_input')
+                    jqSpanText.addClass('jss_span')
+                    jqSpanText.data('cellname', colName + rowIndex);
+
+                    if ($(this).data('disabled') === undefined) {
+                        jqInputItem.show();
+                        jqSpanText.hide();
+                    } else {
+                        jqInputItem.hide();
+                        jqSpanText.show();
+                    }
+                    jqSpanText.text(valueRaw);
+                    
                 }
-                $(spanText).text(valueRaw);
-
                 colIndex++;
             });
             rowIndex++;
+            if (colIndex > jssObject.colLength) {
+                jssObject.colLength = colIndex;
+            }
             colIndex = 1;
 
         });
-
+        jssObject.rowLength = rowIndex;
 
         /**
          * event: focus
          * 
          */
 
-        $(tableSelector + ' input[type="text"]').focus(function() {
+        $(tableSelector + ' .jss_input').focus(function() {
             var colName = $(this).data('colname');
             var rowIndex = $(this).data('row');
-            $(this).addClass(JSS_FOCUS_SELECTOR);
-            settings.onFocus(colName, rowIndex, this);
-            settings._selected = this;
+            $(this).addClass(jssObject.settings.focusClassSelector);
+            jssObject.settings.onFocus(colName, rowIndex, this);
+            jssObject.settings._selected = this;
             this.select();
         });
 
@@ -133,12 +147,12 @@ var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
          * 
          */
 
-        $(tableSelector + ' input[type="text"]').change(function() {
+        $(tableSelector + ' .jss_input').change(function() {
 
             var colName = $(this).data('colname');
             var rowIndex = $(this).data('row');
             var oldValueRaw = $(this).data('value');
-            var ret = settings.onChange(colName, rowIndex, this.value, oldValueRaw, this);
+            var ret = jssObject.settings.onChange(colName, rowIndex, this.value, oldValueRaw, this);
             var cell = jssObject.getCell(colName + rowIndex);
             if (ret === false) {
                 cell.restoreDataValue(colName + rowIndex);
@@ -152,11 +166,11 @@ var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
          * 
          */
 
-        $(tableSelector + " input").blur(function() {
+        $(tableSelector + " .jss_input").blur(function() {
             var colName = $(this).data('colname');
             var rowIndex = $(this).data('row');
-            $(this).removeClass(JSS_FOCUS_SELECTOR);
-            settings.onBlur(colName, rowIndex, this);
+            $(this).removeClass(jssObject.settings.focusClassSelector);
+            jssObject.settings.onBlur(colName, rowIndex, this);
 
         });
 
@@ -166,10 +180,9 @@ var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
          * event: keydown
          */
 
-        $(tableSelector + ' input').keydown(function(event) {
+        $(tableSelector + ' .jss_input').keydown(function(event) {
             var colIndex = $(this).data('col');
             var rowIndex = $(this).data('row');
-
             var nextCol = colIndex;
             var nextRow = rowIndex;
 
@@ -199,10 +212,15 @@ var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
                     break;
             }
             if (nextCol !== colIndex || nextRow !== rowIndex) {
-                var cellName = String.fromCharCode(nextCol * 1 + 64) + nextRow;
-                var cell = jssObject.getCell(cellName);
-                cell.setSelected(true);
+                if (nextCol > 0 && nextRow > 0 && nextCol <= jssObject.colLength && nextRow <= jssObject.rowLength) {
+                    var cellName = String.fromCharCode(nextCol * 1 + 64) + nextRow;
+                    log('move to ' + cellName);
+                    var cell = jssObject.getCell(cellName);
+                    cell.setSelected(true);
+                    log(cell);
+                }
             }
+
         });
         /**
          * 
@@ -220,16 +238,17 @@ var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
         this.undo = function() {
             if (jssObject._undoList.length > 0) {
                 var cellItem = jssObject._undoList.pop();
-                var tableSelector = cellItem[0];
                 var cellName = cellItem[1];
                 var cellValue = cellItem[2];
-                var selectorTextInput = jss_getCellInputSelector(tableSelector, cellName);
-                var selectorTextSpan = jss_getCellSpanSelector(tableSelector, cellName);
+
+                var jqTextInput = jssObject.getCell(cellName).getInputText();
+                var jqTextSpan = jssObject.getCell(cellName).getSpanText();
+
                 if (cellValue !== undefined) {
-                    $(selectorTextInput).val(cellValue);
-                    $(selectorTextInput).data('value', cellValue);
+                    jqTextInput.val(cellValue);
+                    jqTextSpan.data('value', cellValue);
                 }
-                $(selectorTextSpan).text($(selectorTextInput).val());
+                jqTextSpan.text(jqTextInput.val());
                 return jssObject._undoList.length;
             } else {
                 return 0;
@@ -240,61 +259,164 @@ var JSS_CELL_SELECTOR_PREFFIX = 'cell_';
 
     JSimpleSpreadsheetCell = function(jssObject, cellName) {
         var thisCell = this;
+        /**
+         * 
+         * @returns {String}
+         */
+        this.getCellSelector = function(tag) {
+            var cellSelector = '';
+            var comma = '';
+            var cells;
+            if (!(cellName instanceof  Array)) {
+                cellName = cellName.split(',');
+            }
+            cells = cellName;
+            for (c in cells) {
+                cellSelector = cellSelector.concat(comma, jssObject.selector, ' ', tag, '.', jssObject.settings.cellClassSelectorPreffix, cells[c].toUpperCase());
+                comma = ',';
+                cellSelector = cellSelector.concat(comma, jssObject.selector, ' ', tag, '.', jssObject.settings.cellClassSelectorPreffix, cells[c].toLowerCase());
+                cellSelector = cellSelector.concat(comma, jssObject.selector, ' ', tag, '.', cells[c]);
+            }
+            return cellSelector;
+        }
+        /**
+         * 
+         * @returns {String}
+         */
+        this.getInputSelector = function() {
+            return thisCell.getCellSelector('.jss_input');
+        };
 
-        this.getInputTextJQ = function() {
-            var selector = jss_getCellInputSelector(jssObject.selector, cellName);
-            return $(selector);
+        /**
+         * 
+         * @returns {String}
+         */
+        this.getSpanSelector = function() {
+            return thisCell.getCellSelector('.jss_span');
         };
+
+
+        /**
+         * 
+         * @returns {jQuery}
+         */
         this.getInputText = function() {
-            return thisCell.getInputTextJQ()[0];
+            return $(thisCell.getInputSelector());
         };
+
+        /**
+         * 
+         * @returns {jQuery}
+         */
         this.getSpanText = function() {
-            return $(jssObject.selector + ' span.' + cellName);
+            return  $(thisCell.getSpanSelector());
         };
+
+        /**
+         * 
+         * @returns {String}
+         */
         this.getColName = function() {
-            return this.getInputTextJQ().data('colname');
+            return this.getInputText().data('colname');
         };
+
+        /**
+         * 
+         * @returns {Number}
+         */
         this.getRowIndex = function() {
-            return thisCell.getInputTextJQ().data('row');
+            return thisCell.getInputText().data('row');
         };
+        /**
+         * 
+         * @returns {String}
+         */
         this.getValue = function() {
-            return thisCell.getInputText().value;
-        };
-        this.setValue = function(cellValue) {
-            return jss_cellValue(jssObject, cellName, cellValue);
-        };
-        this.isEnabled = function() {
-            return jss_enableCell(jssObject.selector, cellName, value);
-        };
-        this.setEnabled = function(value, dontForce) {
-            return jss_enableCell(jssObject.selector, cellName, value, dontForce);
-        };
-        this.isSelected = function() {
-            return thisCell.getInputTextJQ().hasClass(JSS_FOCUS_SELECTOR);
-        };
-        this.setSelected = function(select) {
-            if (select) {
-                thisCell.getInputTextJQ().focus();
+            var jqTextInput = thisCell.getInputText();
+            if (jqTextInput.length > 1) {
+                var ret = [];
+                jqTextInput.each(function() {
+                    ret.push(this.value);
+                });
+                return ret;
             } else {
-                thisCell.getInputTextJQ().blur();
+                return thisCell.getInputText().val();
             }
         };
+
+        /**
+         * 
+         * 
+         */
+        this.setValue = function(cellValue) {
+            var jqTextInput = thisCell.getInputText();
+            cellValue = typeof cellValue === 'undefined' ? '' : cellValue;
+            jssObject._undoList.push([jssObject.selector, cellName, jqTextInput.data('value')]);
+            jqTextInput.val(cellValue);
+            jqTextInput.data('value', cellValue);
+            thisCell.getSpanText().text(jqTextInput.val());
+            return cellValue;
+        };
+        /**
+         * 
+         * @returns {String}
+         */
+        this.isEnabled = function() {
+            return thisCell.getInputText().data('disabled') === undefined;
+        };
+        this.setEnabled = function(enable, dontForce) {
+            var jqTextInput = thisCell.getInputText();
+            var jqTextSpan = thisCell.getSpanText();
+            if (enable) {
+                jqTextInput.show();
+                jqTextInput.prop('disabled', '');
+                jqTextInput.data('disabled', undefined);
+                jqTextSpan.hide();
+            } else {
+                if (dontForce === undefined || dontForce === true) {
+                    jqTextInput.hide();
+                    jqTextSpan.show();
+                } else {
+                    jqTextInput.prop('disabled', true);
+                    jqTextInput.show();
+                    jqTextSpan.hide();
+                }
+                jqTextInput.data('disabled', true);
+            }
+            return enable;
+        };
+        /**
+         * 
+         * @returns {Boolean}
+         */
+        this.isSelected = function() {
+            return thisCell.getInputText().hasClass(jssObject.settings.focusClassSelector);
+        };
+
+        /**
+         * 
+         * @returns {String}
+         */
+        this.setSelected = function(select) {
+            if (select) {
+                thisCell.getInputText().focus();
+            } else {
+                thisCell.getInputText().blur();
+            }
+        };
+
+        /**
+         * 
+         * @returns {String}
+         */
         this.restoreDataValue = function() {
-            var dataValue = thisCell.getInputTextJQ().data('value');
-            thisCell.getInputText().value = dataValue;
+            var dataValue = thisCell.getInputText().data('value');
+            thisCell.getInputText().val(dataValue);
             thisCell.getSpanText().text(dataValue);
             return dataValue;
         };
     };
 }(jQuery));
-
-/**
- * _jss_rnd 
- * Returns a random number of 1 to 99999
- */
-function _jss_rnd() {
-    return Math.round(Math.random() * 100000);
-}
 
 /**
  * _jss_getPosition
@@ -326,75 +448,9 @@ function _jss_getPosition(oField) {
     return (iCaretPos);
 }
 
-function jss_getCellSelector(tableSelector, cellName, tag) {
-    var cellsName = '';
-    var comma = '';
-    var cells;
-    if (cellName.constructor !== Array) {
-        cellName = cellName.split(',');
-    }
-    if (cellName.constructor === Array) {
-        cells = cellName;
-        for (c in cells) {
-            cellsName += comma + tableSelector + ' ' + tag + '.' + cells[c].toUpperCase();
-            comma = ',';
-            cellsName += comma + tableSelector + ' ' + tag + '.' + cells[c].toLowerCase();
-        }
-    } else {
-        cellsName = tableSelector + ' ' + tag + '.' + cellName;
-    }
 
-    return cellsName;
-}
 
-function jss_getCellInputSelector(tableSelector, cellName) {
-    return jss_getCellSelector(tableSelector, cellName, 'input');
-}
 
-function jss_getCellSpanSelector(tableSelector, cellName) {
-    return jss_getCellSelector(tableSelector, cellName, 'span');
-}
-
-function jss_cellValue(jssObject, cellName, cellValue) {
-    var selectorTextInput = jss_getCellInputSelector(jssObject.selector, cellName);
-    var selectorTextSpan = jss_getCellSpanSelector(jssObject.selector, cellName);
-    var jqTextInput = $(selectorTextInput);
-    if (cellValue !== undefined) {
-        jssObject._undoList.push([jssObject.selector, cellName, $(selectorTextInput).data('value')]);
-        jqTextInput.val(cellValue);
-        jqTextInput.data('value', cellValue);
-    }
-    $(selectorTextSpan).text(jqTextInput.val());
-    return jqTextInput.val();
-}
-function jss_enableCell(tableSelector, cellName, enable, dontForce) {
-    var selectorTextInput = jss_getCellInputSelector(tableSelector, cellName);
-    var selectorTextSpan = jss_getCellSpanSelector(tableSelector, cellName);
-    var jqTextInput = $(selectorTextInput);
-    var jqTextSpan = $(selectorTextSpan);
-    if (enable !== undefined) {
-        if (enable) {
-            jqTextInput.show();
-            jqTextInput.prop('disabled', '');
-            jqTextInput.data('disabled', undefined);
-            jqTextSpan.hide();
-        } else {
-            if (dontForce === undefined || dontForce === true) {
-                jqTextInput.hide();
-                jqTextSpan.show();
-            } else {
-                jqTextInput.prop('disabled', true);
-                jqTextInput.show();
-                jqTextSpan.hide();
-            }
-            jqTextInput.data('disabled', true);
-        }
-    } else {
-        return (jqTextInput.data('disabled') === undefined);
-    }
-    return jqTextInput.val();
-
-}
 function jss_includeCSS(css, media) {
     var link = document.createElement("link");
     link.href = css;
@@ -433,8 +489,4 @@ if (typeof KeyEvent === "undefined") {
         DOM_VK_DELETE: 46
     };
 }
-if (typeof String.prototype.trim !== 'function') {
-    String.prototype.trim = function() {
-        return this.replace(/^\s+|\s+$/g, '');
-    }
-}
+
