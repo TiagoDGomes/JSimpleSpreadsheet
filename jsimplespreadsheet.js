@@ -1,5 +1,5 @@
 /**
- * jSimpleSpreadsheet 3.2
+ * jSimpleSpreadsheet 3.2.1
  * @author Tiago Donizetti Gomes (https://github.com/TiagoDGomes/jSimpleSpreadsheet)
  *  
  * This program is free software: you can redistribute it and/or modify
@@ -83,6 +83,12 @@ function log(obj) {
 
                         case 'checkbox':
                         case 'boolean':
+                            jqLabelText.text(valueRaw);
+                            if (jqTRElement.data('value')==='true'||jqTRElement.data('value')===true){
+                                valueRaw = true;
+                            }else{
+                                valueRaw = false;
+                            }
                             inputItem = document.createElement('input');
                             inputItem.type = 'checkbox';
                             inputItem.checked = jqTRElement.data('value');
@@ -98,6 +104,8 @@ function log(obj) {
                             inputItem.value = valueRaw;
                             inputItem.type = 'text';
                             selectorAllowHide = 'allow_hide_on_disabled';
+                            jqLabelText.text(valueRaw);
+
                     }
                     inputItem.name = jqTRElement.data('name') !== undefined ? jqTRElement.data('name') : colName + rowIndex + '_' + colName + '_' + rowIndex;
                     inputItem.className = 'value cell ' +
@@ -135,8 +143,7 @@ function log(obj) {
                         }
                     }
 
-                    jqLabelText.text(valueRaw);
-
+                    
                 }
                 colIndex++;
             });
@@ -221,12 +228,10 @@ function log(obj) {
                 case KeyEvent.DOM_VK_DOWN:
                     event.preventDefault();
                     nextRow++;
-
                     break;
                 case KeyEvent.DOM_VK_UP:
                     event.preventDefault();
                     nextRow--;
-
                     break;
                 case KeyEvent.DOM_VK_RIGHT:
                     if (this.value.length === _jss_getPosition(this)) {
@@ -246,7 +251,6 @@ function log(obj) {
                     var cellName = String.fromCharCode(nextCol * 1 + 64) + nextRow;
                     var cell = jssObject.getCell(cellName);
                     cell.setSelected(true);
-
                 }
             }
 
@@ -272,12 +276,15 @@ function log(obj) {
 
                 var jqInputItem = jssObject.getCell(cellName).getInputItem();
                 var jqTextLabel = jssObject.getCell(cellName).getLabelText();
-
-                if (cellValue !== undefined) {
-                    jqInputItem.val(cellValue);
-                    jqTextLabel.data('value', cellValue);
+                switch(true){
+                    case jqInputItem.hasClass('boolean'):
+                        jqInputItem.prop('checked', cellValue);
+                        break;
+                    default:
+                        jqInputItem.val(cellValue);
+                        jqTextLabel.text(jqInputItem.val());
                 }
-                jqTextLabel.text(jqInputItem.val());
+                jqInputItem.data('value', cellValue);                
                 return jssObject._undoList.length;
             } else {
                 return 0;
@@ -370,7 +377,6 @@ function log(obj) {
                     } else {
                         ret.push(this.value);
                     }
-
                 });
                 return ret;
             } else if (jqInputItem.length === 1) {
@@ -390,13 +396,15 @@ function log(obj) {
         this.setValue = function(cellValue) {
             var jqInputItem = thisCell.getInputItem();
             cellValue = typeof cellValue === 'undefined' ? '' : cellValue;
-            jssObject._undoList.push([jssObject.selector, cellName, jqInputItem.data('value')]);
+            
             if (jqInputItem.hasClass('boolean')) {
-                jqInputItem.prop('checked', cellValue);
+                jqInputItem.prop('checked',cellValue);
+                
             } else {
                 jqInputItem.val(cellValue);
                 thisCell.getLabelText().text(jqInputItem.val());
             }
+            jssObject._undoList.push([jssObject.selector, cellName, jqInputItem.data('value')]);
             jqInputItem.data('value', cellValue);
             return cellValue;
         };
