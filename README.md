@@ -136,7 +136,7 @@ worksheet.undo();
 ``` 
 ## Releases:
 * v3.1
-      - Added options to JSimpleSpreadsheet: <code>cellClassSelectorPreffix</code>, <code>focusClassSelector</code>, <code>defaultClass;
+      - Added options to JSimpleSpreadsheet: <code>cellClassSelectorPreffix</code>, <code>focusClassSelector</code>, <code>defaultClass</code>;
       - Removed global variables: JSS_RUNTIME_SELECTOR, JSS_FOCUS_SELECTOR, JSS_CELL_SELECTOR_PREFFIX 
       - Changed: <code>'jss_*'</code> functions to object functions;
       - Changed: <code>String.prototype.trim</code> to <code>$.trim()</code>
