@@ -1,5 +1,5 @@
 /**
- * jSimpleSpreadsheet 3.2.1
+ * JSimpleSpreadsheet 3.2.2
  * @author Tiago Donizetti Gomes (https://github.com/TiagoDGomes/jSimpleSpreadsheet)
  *  
  * This program is free software: you can redistribute it and/or modify
@@ -18,10 +18,6 @@
  */
 var JSimpleSpreadsheet;
 var JSimpleSpreadsheetCell;
-
-function log(obj) {
-    console.log(obj);
-}
 
 (function($) {
     JSimpleSpreadsheet = function(tableSelector, options) {
@@ -78,7 +74,7 @@ function log(obj) {
                     var labelText = document.createElement('label');
                     var jqInputItem = $(inputItem);
                     var jqLabelText = $(labelText);
-                    var selectorAllowHide = '';
+                    var allowHideOnDisable = false;
                     switch (jqTRElement.data('type')) {
 
                         case 'checkbox':
@@ -103,7 +99,7 @@ function log(obj) {
                             inputItem = document.createElement('input');
                             inputItem.value = valueRaw;
                             inputItem.type = 'text';
-                            selectorAllowHide = 'allow_hide_on_disabled';
+                            allowHideOnDisable = true;
                             jqLabelText.text(valueRaw);
 
                     }
@@ -114,11 +110,13 @@ function log(obj) {
                             selectorCellName_;
 
                     labelText.className = inputItem.className;
+                    
                     this.appendChild(inputItem);
                     this.appendChild(labelText);
 
-                    var jqLabelText = $(labelText);  // Refresh jQuery in input
-                    var jqInputItem = $(inputItem);  // Refresh jQuery in label
+                    jqLabelText = $(labelText);  // Refresh jQuery in input
+                    jqInputItem = $(inputItem);  // Refresh jQuery in label
+                    
                     jqInputItem.data('cellname', colName + rowIndex);
                     jqInputItem.data('colname', colName);
                     jqInputItem.data('col', colIndex);
@@ -126,14 +124,14 @@ function log(obj) {
                     jqInputItem.data('value', valueRaw);
                     jqInputItem.addClass(inputItem.name.toLowerCase());
                     jqInputItem.addClass(dataType);
-                    jqInputItem.addClass(selectorAllowHide);
                     jqInputItem.addClass('jss_input')
                     jqLabelText.addClass('jss_label')
                     jqLabelText.data('cellname', colName + rowIndex);
                     if (jqTRElement.data('id')) {
                         inputItem.id = jqTRElement.data('id');
                     }
-                    if (dataType === 'string') {
+                    if (allowHideOnDisable) {
+                        jqInputItem.addClass('allow_hide_on_disable');                    
                         if (jqTRElement.data('disabled') === undefined) {
                             jqInputItem.show();
                             jqLabelText.hide();
