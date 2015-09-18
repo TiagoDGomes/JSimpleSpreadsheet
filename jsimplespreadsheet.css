@@ -9,5 +9,4 @@
 .jss_default_class input[type="number"]{border:1px solid transparent;cursor:default;}
 
 .jss_default_class td.cell:hover
-.jss_default_class span.cell:hover
-{border:1px solid #aeaeae;background-color:#fefefe;}
+.jss_default_class span.cell:hover {border:1px solid #aeaeae;background-color:#fefefe;}

@@ -1,5 +1,5 @@
 /**
- * jSimpleSpreadsheet 3.1
+ * jSimpleSpreadsheet 3.1.1
  * @author Tiago Donizetti Gomes (https://github.com/TiagoDGomes/jSimpleSpreadsheet)
  *  
  * This program is free software: you can redistribute it and/or modify
@@ -62,8 +62,9 @@ function log(obj) {
         $(tableSelector + ' ' + jssObject.settings.trSelector).each(function() {
             $(this).children(jssObject.settings.tdSelector).each(function() {
                 if ($(this).data('ignore') === undefined) {
-                    $(this).addClass('cell');
-                    var valueRaw = $.trim($(this).text());
+                    var jqTRElement = $(this);
+                    jqTRElement.addClass('cell');
+                    var valueRaw = $.trim(jqTRElement.text());
                     var colName = String.fromCharCode(colIndex + 64);
 
                     var selectorCellName = jssObject.settings.cellClassSelectorPreffix + colName + rowIndex;
@@ -71,31 +72,41 @@ function log(obj) {
                     var selectorCellIndex = jssObject.settings.cellClassSelectorPreffix + colIndex + '_' + rowIndex;
 
                     this.innerHTML = '';
+
+                    var dataType = 'string'; // default
                     var inputItem;
-                    switch ($(this).data('type')) {
-                        case 'text':
+                    var labelText = document.createElement('label');
+                    var jqInputItem = $(inputItem);
+                    var jqLabelText = $(labelText);
+                    switch (jqTRElement.data('type')) {
+                        case 'checkbox':
+                        case 'boolean':
+                            inputItem = document.createElement('input');
+                            inputItem.type = 'checkbox';
+                            inputItem.checked = jqTRElement.data('value');
+                            if (jqTRElement.data('id')) {
+                                labelText.htmlFor = jqTRElement.data('id');
+                            }
+                            dataType = 'boolean';
+                            break;
+                        case 'string':
                         default:
                             inputItem = document.createElement('input');
-                            inputItem.name = $(this).data('name') !== undefined ? $(this).data('name') : colName + rowIndex + '_' + colName + '_' + rowIndex;
-
                             inputItem.value = valueRaw;
                             inputItem.type = 'text';
 
-                            inputItem.className = 'value cell ' +
-                                    selectorCellIndex + ' ' +
-                                    selectorCellName + ' ' +
-                                    selectorCellName_;
-
-
                     }
+                    inputItem.name = jqTRElement.data('name') !== undefined ? jqTRElement.data('name') : colName + rowIndex + '_' + colName + '_' + rowIndex;
+                    inputItem.className = 'value cell ' +
+                            selectorCellIndex + ' ' +
+                            selectorCellName + ' ' +
+                            selectorCellName_;
 
-                    var spanText = document.createElement('span');
-                    spanText.className = inputItem.className;
-
+                    labelText.className = inputItem.className;
                     this.appendChild(inputItem);
-                    this.appendChild(spanText);
+                    this.appendChild(labelText);
 
-                    var jqSpanText = $(spanText);
+                    var jqLabelText = $(labelText);
                     var jqInputItem = $(inputItem);
                     jqInputItem.data('cellname', colName + rowIndex);
                     jqInputItem.data('colname', colName);
@@ -103,19 +114,25 @@ function log(obj) {
                     jqInputItem.data('row', rowIndex);
                     jqInputItem.data('value', valueRaw);
                     jqInputItem.addClass(inputItem.name.toLowerCase());
+                    jqInputItem.addClass(dataType);
                     jqInputItem.addClass('jss_input')
-                    jqSpanText.addClass('jss_span')
-                    jqSpanText.data('cellname', colName + rowIndex);
-
-                    if ($(this).data('disabled') === undefined) {
-                        jqInputItem.show();
-                        jqSpanText.hide();
-                    } else {
-                        jqInputItem.hide();
-                        jqSpanText.show();
+                    jqLabelText.addClass('jss_label')
+                    jqLabelText.data('cellname', colName + rowIndex);
+                    if (jqTRElement.data('id')) {
+                        inputItem.id = jqTRElement.data('id');
                     }
-                    jqSpanText.text(valueRaw);
-                    
+                    if (dataType === 'string') {
+                        if (jqTRElement.data('disabled') === undefined) {
+                            jqInputItem.show();
+                            jqLabelText.hide();
+                        } else {
+                            jqInputItem.hide();
+                            jqLabelText.show();
+                        }
+                    }
+
+                    jqLabelText.text(valueRaw);
+
                 }
                 colIndex++;
             });
@@ -134,9 +151,10 @@ function log(obj) {
          */
 
         $(tableSelector + ' .jss_input').focus(function() {
-            var colName = $(this).data('colname');
-            var rowIndex = $(this).data('row');
-            $(this).addClass(jssObject.settings.focusClassSelector);
+            var jqInputItem = $(this);
+            var colName = jqInputItem.data('colname');
+            var rowIndex = jqInputItem.data('row');
+            jqInputItem.addClass(jssObject.settings.focusClassSelector);
             jssObject.settings.onFocus(colName, rowIndex, this);
             jssObject.settings._selected = this;
             this.select();
@@ -148,10 +166,10 @@ function log(obj) {
          */
 
         $(tableSelector + ' .jss_input').change(function() {
-
-            var colName = $(this).data('colname');
-            var rowIndex = $(this).data('row');
-            var oldValueRaw = $(this).data('value');
+            var jqInputItem = $(this);
+            var colName = jqInputItem.data('colname');
+            var rowIndex = jqInputItem.data('row');
+            var oldValueRaw = jqInputItem.data('value');
             var ret = jssObject.settings.onChange(colName, rowIndex, this.value, oldValueRaw, this);
             var cell = jssObject.getCell(colName + rowIndex);
             if (ret === false) {
@@ -167,9 +185,10 @@ function log(obj) {
          */
 
         $(tableSelector + " .jss_input").blur(function() {
-            var colName = $(this).data('colname');
-            var rowIndex = $(this).data('row');
-            $(this).removeClass(jssObject.settings.focusClassSelector);
+            var jqInputItem = $(this);
+            var colName = jqInputItem.data('colname');
+            var rowIndex = jqInputItem.data('row');
+            jqInputItem.removeClass(jssObject.settings.focusClassSelector);
             jssObject.settings.onBlur(colName, rowIndex, this);
 
         });
@@ -181,8 +200,9 @@ function log(obj) {
          */
 
         $(tableSelector + ' .jss_input').keydown(function(event) {
-            var colIndex = $(this).data('col');
-            var rowIndex = $(this).data('row');
+            var jqInputItem = $(this);
+            var colIndex = jqInputItem.data('col');
+            var rowIndex = jqInputItem.data('row');
             var nextCol = colIndex;
             var nextRow = rowIndex;
 
@@ -216,7 +236,7 @@ function log(obj) {
                     var cellName = String.fromCharCode(nextCol * 1 + 64) + nextRow;
                     var cell = jssObject.getCell(cellName);
                     cell.setSelected(true);
-                    
+
                 }
             }
 
@@ -240,14 +260,14 @@ function log(obj) {
                 var cellName = cellItem[1];
                 var cellValue = cellItem[2];
 
-                var jqTextInput = jssObject.getCell(cellName).getInputText();
-                var jqTextSpan = jssObject.getCell(cellName).getSpanText();
+                var jqInputItem = jssObject.getCell(cellName).getInputItem();
+                var jqTextLabel = jssObject.getCell(cellName).getLabelText();
 
                 if (cellValue !== undefined) {
-                    jqTextInput.val(cellValue);
-                    jqTextSpan.data('value', cellValue);
+                    jqInputItem.val(cellValue);
+                    jqTextLabel.data('value', cellValue);
                 }
-                jqTextSpan.text(jqTextInput.val());
+                jqTextLabel.text(jqInputItem.val());
                 return jssObject._undoList.length;
             } else {
                 return 0;
@@ -290,8 +310,8 @@ function log(obj) {
          * 
          * @returns {String}
          */
-        this.getSpanSelector = function() {
-            return thisCell.getCellSelector('.jss_span');
+        this.getLabelSelector = function() {
+            return thisCell.getCellSelector('.jss_label');
         };
 
 
@@ -299,7 +319,7 @@ function log(obj) {
          * 
          * @returns {jQuery}
          */
-        this.getInputText = function() {
+        this.getInputItem = function() {
             return $(thisCell.getInputSelector());
         };
 
@@ -307,8 +327,8 @@ function log(obj) {
          * 
          * @returns {jQuery}
          */
-        this.getSpanText = function() {
-            return  $(thisCell.getSpanSelector());
+        this.getLabelText = function() {
+            return  $(thisCell.getLabelSelector());
         };
 
         /**
@@ -316,7 +336,7 @@ function log(obj) {
          * @returns {String}
          */
         this.getColName = function() {
-            return this.getInputText().data('colname');
+            return this.getInputItem().data('colname');
         };
 
         /**
@@ -324,22 +344,22 @@ function log(obj) {
          * @returns {Number}
          */
         this.getRowIndex = function() {
-            return thisCell.getInputText().data('row');
+            return thisCell.getInputItem().data('row');
         };
         /**
          * 
          * @returns {String}
          */
         this.getValue = function() {
-            var jqTextInput = thisCell.getInputText();
-            if (jqTextInput.length > 1) {
+            var jqInputItem = thisCell.getInputItem();
+            if (jqInputItem.length > 1) {
                 var ret = [];
-                jqTextInput.each(function() {
+                jqInputItem.each(function() {
                     ret.push(this.value);
                 });
                 return ret;
             } else {
-                return thisCell.getInputText().val();
+                return thisCell.getInputItem().val();
             }
         };
 
@@ -348,12 +368,12 @@ function log(obj) {
          * 
          */
         this.setValue = function(cellValue) {
-            var jqTextInput = thisCell.getInputText();
+            var jqInputItem = thisCell.getInputItem();
             cellValue = typeof cellValue === 'undefined' ? '' : cellValue;
-            jssObject._undoList.push([jssObject.selector, cellName, jqTextInput.data('value')]);
-            jqTextInput.val(cellValue);
-            jqTextInput.data('value', cellValue);
-            thisCell.getSpanText().text(jqTextInput.val());
+            jssObject._undoList.push([jssObject.selector, cellName, jqInputItem.data('value')]);
+            jqInputItem.val(cellValue);
+            jqInputItem.data('value', cellValue);
+            thisCell.getLabelText().text(jqInputItem.val());
             return cellValue;
         };
         /**
@@ -361,26 +381,26 @@ function log(obj) {
          * @returns {String}
          */
         this.isEnabled = function() {
-            return thisCell.getInputText().data('disabled') === undefined;
+            return thisCell.getInputItem().data('disabled') === undefined;
         };
         this.setEnabled = function(enable, dontForce) {
-            var jqTextInput = thisCell.getInputText();
-            var jqTextSpan = thisCell.getSpanText();
+            var jqInputItem = thisCell.getInputItem();
+            var jqTextLabel = thisCell.getLabelText();
             if (enable) {
-                jqTextInput.show();
-                jqTextInput.prop('disabled', '');
-                jqTextInput.data('disabled', undefined);
-                jqTextSpan.hide();
+                jqInputItem.show();
+                jqInputItem.prop('disabled', '');
+                jqInputItem.data('disabled', undefined);
+                jqTextLabel.hide();
             } else {
                 if (dontForce === undefined || dontForce === true) {
-                    jqTextInput.hide();
-                    jqTextSpan.show();
+                    jqInputItem.hide();
+                    jqTextLabel.show();
                 } else {
-                    jqTextInput.prop('disabled', true);
-                    jqTextInput.show();
-                    jqTextSpan.hide();
+                    jqInputItem.prop('disabled', true);
+                    jqInputItem.show();
+                    jqTextLabel.hide();
                 }
-                jqTextInput.data('disabled', true);
+                jqInputItem.data('disabled', true);
             }
             return enable;
         };
@@ -389,7 +409,7 @@ function log(obj) {
          * @returns {Boolean}
          */
         this.isSelected = function() {
-            return thisCell.getInputText().hasClass(jssObject.settings.focusClassSelector);
+            return thisCell.getInputItem().hasClass(jssObject.settings.focusClassSelector);
         };
 
         /**
@@ -398,9 +418,9 @@ function log(obj) {
          */
         this.setSelected = function(select) {
             if (select) {
-                thisCell.getInputText().focus();
+                thisCell.getInputItem().focus();
             } else {
-                thisCell.getInputText().blur();
+                thisCell.getInputItem().blur();
             }
         };
 
@@ -409,9 +429,9 @@ function log(obj) {
          * @returns {String}
          */
         this.restoreDataValue = function() {
-            var dataValue = thisCell.getInputText().data('value');
-            thisCell.getInputText().val(dataValue);
-            thisCell.getSpanText().text(dataValue);
+            var dataValue = thisCell.getInputItem().data('value');
+            thisCell.getInputItem().val(dataValue);
+            thisCell.getLabelText().text(dataValue);
             return dataValue;
         };
     };

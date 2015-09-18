@@ -3,7 +3,7 @@
 <html>  
     <head>  
         <meta http-equiv="content-type" content="text/html; charset=utf-8">  
-        <title>jSimpleSpreadsheet Example</title> 
+        <title>JSimpleSpreadsheet Example</title> 
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> 
         
@@ -16,7 +16,7 @@
 
     </head>  
     <body>       
-        <h1>jSimpleSpreadsheet Example - Objects</h1>
+        <h1>JSimpleSpreadsheet Example</h1>
 
 
         <h2>Test!</h2>
@@ -71,13 +71,13 @@ console.log(worksheet.getCell('total').getValue());
                     <th>2</th><td></td><td></td><td data-disabled>disabled cell in HTML code</td>                        
                 </tr>                                            
                 <tr>                                                         
-                    <th>3</th><td></td><td>Hey!!!</td><td></td>                         
+                    <th>3</th><td data-type="boolean" data-id="teste_id" >Label</td><td>Hey!!!</td><td></td>                         
                 </tr>                                            
                 <tr>                                                         
                     <th>4</th><td>Nothing here</td><td></td><td></td>                     
                 </tr>                                            
                 <tr>                                                         
-                    <th>5</th><td></td><td data-ignore><b>Ignore this cell</b></td><td></td>                       
+                    <th>5</th><td></td><td data-ignore><b><input type="checkbox" data-colname="B" data-col="2" data-row="2" class="cell_B5 jss_input">Ignore this cell</b></td><td></td>                       
                 </tr>                                        
                 <tr>                                                                                                                  
                     <th>6</th><td></td><td></td><td data-name="total"></td>                      
