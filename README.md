@@ -133,7 +133,7 @@ worksheet.undo();
           <th>3</th><td data-ignore><strong>The JSS will ignore this cell</strong></td><td></td>                 
       </tr>                                            
       <tr>                                                         
-          <th>4</th><td></td><td></td>                  
+          <th>4</th><td data-type="boolean" data-id="test_id" data-value="true">This is a label for boolean field</td><td></td>                  
       </tr>                                            
       <tr>                                                         
           <th>5</th><td></td><td></td>                           
