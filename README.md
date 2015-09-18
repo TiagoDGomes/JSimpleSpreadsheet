@@ -124,22 +124,38 @@ worksheet.undo();
           <th>&nbsp;</th><th>A</th><th>B</th>
       </tr>
       <tr>                                                         
-          <th>1</th><td>This is A1</td><td></td>                       
+          <th>1</th>
+          <td>This is A1</td>
+          <td>This is B1</td>                       
       </tr>                                            
       <tr>                                                         
-          <th>2</th><td data-disabled>disabled in HTML code</td><td></td>                
+          <th>2</th>
+          <td data-disabled>disabled cell</td>
+          <td></td>                
       </tr>                                            
       <tr>                                                         
-          <th>3</th><td data-ignore><strong>The JSS will ignore this cell</strong></td><td></td>                 
+          <th>3</th>
+          <td data-disabled="force">disabled cell (input disabled)</td>
+          <td></td>                
       </tr>                                            
       <tr>                                                         
-          <th>4</th><td data-type="boolean" data-id="test_id" data-value="true">This is a label for boolean field</td><td></td>                  
+          <th>4</th>
+          <td data-ignore>
+                <strong>The JSS will ignore this cell</strong>
+          </td>
+          <td></td>                 
       </tr>                                            
       <tr>                                                         
-          <th>5</th><td></td><td></td>                           
-      </tr>                                        
+          <th>5</th>
+          <td data-type="boolean" data-id="test_id" data-value="true">
+                This is a label for boolean field
+          </td>
+          <td></td>                  
+      </tr>                                            
       <tr>
-          <th>6</th><td data-name="total">The input will be named 'total'</td><td></td>                     
+          <th>6</th>
+          <td data-name="total">The input will be named 'total'</td>
+          <td></td>                     
       </tr>
       <!-- TO-DO (not implemented)  --!>
       <tr>
@@ -153,6 +169,8 @@ worksheet.undo();
 </table> 
 ``` 
 ## Releases:
+* v3.2.2
+      - allowHideOnDisable changes
 * v3.2.1
       - Bugfix: undo
 * v3.2
