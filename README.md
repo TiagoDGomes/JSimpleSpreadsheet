@@ -66,8 +66,14 @@ var worksheet = new JSimpleSpreadsheet(your_table_selector, {
     
     trSelector: 'tr',
     
-    tdSelector: 'td'
+    tdSelector: 'td',
     
+    cellClassSelectorPreffix: 'cell_',
+    
+    focusClassSelector: 'focus',
+    
+    defaultClass: 'jss_default_class'
+
 });
 
 // Setting value to A1
@@ -99,8 +105,9 @@ worksheet.undo();
 //   TO-DO: 
 // ---------
 
-// Feature: set format
-// worksheet.getCell('A4').setFormat(Number);     
+//// Set format
+// worksheet.getCell('A4').setFormat(Number);   
+
 
 
 ```
@@ -130,7 +137,15 @@ worksheet.undo();
       </tr>                                        
       <tr>
           <th>6</th><td></td><td></td><td data-name="total">The input will be named 'total'</td>                      
-      </tr>  
+      </tr>
+      <!-- TO-DO (not implemented)  --!>
+      <tr>
+          <th>7</th>
+          <td data-type="number">0</td>
+          <td data-type="postal-code"></td>
+          <td data-type="select" data-options="[{'a':'apple'},{'b':'banana'}]"></td>                      
+      </tr>
+      <--        end TO-DO            -->
   </tbody>
 </table> 
 ``` 
