@@ -1,5 +1,5 @@
 /**
- * JSimpleSpreadsheet 3.2.2
+ * JSimpleSpreadsheet 3.2.3
  * @author Tiago Donizetti Gomes (https://github.com/TiagoDGomes/jSimpleSpreadsheet)
  *  
  * This program is free software: you can redistribute it and/or modify
@@ -416,13 +416,13 @@ var JSimpleSpreadsheetCell;
         this.setEnabled = function(enable, dontForce) {
             var jqInputItem = thisCell.getInputItem();
             var jqTextLabel = thisCell.getLabelText();
-            if (jqInputItem.hasClass('allow_hide_on_disabled')) {
+            if (jqInputItem.hasClass('allow_hide_on_disable')) {
                 jqInputItem.show();
                 jqTextLabel.show();
                 if (enable) {
                     jqTextLabel.hide();
                 } else {
-                    if (dontForce === undefined || dontForce === true || jqInputItem.hasClass('string')) {
+                    if (dontForce === undefined || dontForce === true) {
                         jqInputItem.hide();
                     } else {
                         jqTextLabel.hide();
