@@ -118,25 +118,25 @@ worksheet.undo();
 <table border="1" class="this-is-a-example">                    
   <tbody>
       <tr>
-          <th>&nbsp;</th><th>A</th><th>B</th><th>C</th>
+          <th>&nbsp;</th><th>A</th><th>B</th>
       </tr>
       <tr>                                                         
-          <th>1</th><td></td><td></td><td></td>                        
+          <th>1</th><td>This is A1</td><td></td>                       
       </tr>                                            
       <tr>                                                         
-          <th>2</th><td></td><td></td><td data-disabled>disabled in HTML code</td>                        
+          <th>2</th><td data-disabled>disabled in HTML code</td><td></td>                
       </tr>                                            
       <tr>                                                         
-          <th>3</th><td></td><td>This is B3</td><td></td>                         
+          <th>3</th><td data-ignore><strong>The JSS will ignore this cell</strong></td><td></td>                 
       </tr>                                            
       <tr>                                                         
-          <th>4</th><td></td><td></td><td></td>                     
+          <th>4</th><td></td><td></td>                  
       </tr>                                            
       <tr>                                                         
-          <th>5</th><td></td><td data-ignore><b>Ignore this cell</b></td><td></td>                     
+          <th>5</th><td></td><td></td>                           
       </tr>                                        
       <tr>
-          <th>6</th><td></td><td></td><td data-name="total">The input will be named 'total'</td>                      
+          <th>6</th><td data-name="total">The input will be named 'total'</td><td></td>                     
       </tr>
       <!-- TO-DO (not implemented)  --!>
       <tr>
