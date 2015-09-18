@@ -83,7 +83,10 @@ worksheet.getCell('A1').setValue('This is A1');
 worksheet.getCell(['C3','B4']).setValue('Both C3 and B4 setValue');
 
 // Getting value from A1
-var A1 = worksheet.getCell('A1').getValue();
+var my_A1 = worksheet.getCell('A1').getValue();
+
+// Getting value from 'total'
+var my_total = worksheet.getCell('total').getValue();
 
 // Getting a array of values
 var my_array = worksheet.getCell(['A1','C3']).getValue();      
@@ -95,7 +98,7 @@ worksheet.getCell(['C1','A2']).setEnabled(false);
 worksheet.getCell('A3').setEnabled(false, false);
 
 // Checking C1 if enabled
-var enabled = worksheet.getCell('C1').isEnabled();
+var my_check = worksheet.getCell('C1').isEnabled();
 
 // Undo
 worksheet.getCell('B5').setValue('Undo test');
