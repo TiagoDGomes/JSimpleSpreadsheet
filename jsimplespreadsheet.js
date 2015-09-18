@@ -214,10 +214,9 @@ function log(obj) {
             if (nextCol !== colIndex || nextRow !== rowIndex) {
                 if (nextCol > 0 && nextRow > 0 && nextCol <= jssObject.colLength && nextRow <= jssObject.rowLength) {
                     var cellName = String.fromCharCode(nextCol * 1 + 64) + nextRow;
-                    log('move to ' + cellName);
                     var cell = jssObject.getCell(cellName);
                     cell.setSelected(true);
-                    log(cell);
+                    
                 }
             }
 
