@@ -153,6 +153,13 @@ worksheet.undo();
 </table> 
 ``` 
 ## Releases:
+* v3.2.1
+      - Bugfix: undo
+* v3.2
+      - Full support to data-type="boolean"
+* v3.1.1
+      - Basic support to data-type="boolean"
+      - Span label -> Label
 * v3.1
       - Added options to JSimpleSpreadsheet: <code>cellClassSelectorPreffix</code>, <code>focusClassSelector</code>, <code>defaultClass</code>;
       - Removed global variables: JSS_RUNTIME_SELECTOR, JSS_FOCUS_SELECTOR, JSS_CELL_SELECTOR_PREFFIX 
