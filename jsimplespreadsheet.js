@@ -410,9 +410,9 @@ function log(obj) {
         this.setEnabled = function(enable, dontForce) {
             var jqInputItem = thisCell.getInputItem();
             var jqTextLabel = thisCell.getLabelText();
-            jqInputItem.show();
-            jqTextLabel.show();
             if (jqInputItem.hasClass('allow_hide_on_disabled')) {
+                jqInputItem.show();
+                jqTextLabel.show();
                 if (enable) {
                     jqTextLabel.hide();
                 } else {
