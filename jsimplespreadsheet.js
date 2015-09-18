@@ -117,8 +117,8 @@ function log(obj) {
                     this.appendChild(inputItem);
                     this.appendChild(labelText);
 
-                    var jqLabelText = $(labelText);
-                    var jqInputItem = $(inputItem);
+                    var jqLabelText = $(labelText);  // Refresh jQuery in input
+                    var jqInputItem = $(inputItem);  // Refresh jQuery in label
                     jqInputItem.data('cellname', colName + rowIndex);
                     jqInputItem.data('colname', colName);
                     jqInputItem.data('col', colIndex);
