@@ -169,6 +169,8 @@ worksheet.undo();
 </table> 
 ``` 
 ## Releases:
+
+``` 
 * v3.2.2
       - allowHideOnDisable changes
 * v3.2.1
@@ -224,3 +226,4 @@ worksheet.undo();
       - Bugfix: 'undo' in 'onBlur' return false 
 * v1.0 
       - First release. 
+``` 
