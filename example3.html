@@ -55,9 +55,9 @@ console.log(worksheet.getCell('total').getValue());
         </textarea>
 
         <p>
-            <button onclick="try {eval($('#code').val());} catch (err) {alert('Hey!\n' + err)}">Execute</button>        
-            <button onclick="eval($('#code').val());">Execute (debug console)</button>        
-            <button onclick="if (!worksheet.undo()) {alert('Finished')};">undo</button>        
+            <button onclick="try {eval($('#code').val());} catch (err) {alert('Hey!\n' + err)};$('#btn-undo').prop('disabled', false);">Execute</button>        
+            <button onclick="eval($('#code').val());$('#btn-undo').prop('disabled', false);">Execute (debug console)</button>        
+            <button onclick="this.disabled = !worksheet.undo();" id="btn-undo">Undo</button>       
         </p>
         <table border="1" class="my-spreadsheet">                    
             <tbody>
