@@ -6,6 +6,8 @@ Simple, easy and uncomplicated. Your HTML tables are navigable and editable (lik
 (pt)
 Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáveis (como uma planilha).
 
+Test now: https://tiagodgomes.github.io/JSimpleSpreadsheet/example3.html
+
 ## Simple example:
 
 ```html
@@ -32,7 +34,7 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
 </html>
 ```
 
-It's this!
+It's this! 
 
 ## Full usage examples:
 
@@ -157,14 +159,14 @@ worksheet.undo();
           <td data-name="total">The input will be named 'total'</td>
           <td></td>                     
       </tr>
-      <!-- TO-DO (not implemented)  --!>
-      <tr>
+      <!-- TO-DO (not implemented) -->
+      <!-- <tr>
           <th>7</th>
           <td data-type="number">0</td>
           <td data-type="postal-code"></td>
           <td data-type="select" data-options="[{'a':'apple'},{'b':'banana'}]"></td>                      
-      </tr>
-      <--        end TO-DO            -->
+      </tr>-->
+      <!--         end TO-DO            -->
   </tbody>
 </table> 
 ``` 
