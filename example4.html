@@ -25,7 +25,7 @@
             </thead>                
             <tbody>
                 <tr>                                                         
-                    <th>1</th><td></td><td></td><td></td> <td data-type="calendar"></td>                        
+                    <th>1</th><td>My ugly table</td><td></td><td></td> <td data-type="calendar">1984-05-12</td>                        
                 </tr>                                            
                 <tr>                                                         
                     <th>2</th><td></td><td></td><td data-disabled>disabled cell in HTML code</td>   <td></td>                       
@@ -72,7 +72,7 @@ worksheet = new JSimpleSpreadsheet('.my-spreadsheet', {
     },
     theme: 'jsimplespreadsheet.theme.css' 
 });
-worksheet.getCell('A1').setValue('This is A1');
+worksheet.getCell('A1').setValue('My beautiful spreadsheet');
 worksheet.getCell(['C1','C3']).setValue('Both C1 and C3 setValue');
 worksheet.getCell('A5').setValue('B4 setValue');
 worksheet.getCell('C4').setValue('<b>Bold</b>');
