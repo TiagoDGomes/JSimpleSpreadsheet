@@ -171,6 +171,8 @@ worksheet.addRow();
 ## Releases:
 
 ``` 
+* v4.0.2
+      - Clean code: jssCellClass
 * v4.0.1
       - Fix column name
 * v4.0.0

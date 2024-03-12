@@ -193,24 +193,26 @@ class JSimpleSpreadsheet {
                     if (element.dataset.cell == undefined) {
                         var cellNameFull = this.props.cellClassSelectorPreffix + cellName;
                         var newCell;
+                        var jssCellClass;
                         switch (element.dataset.type) {
                             case 'boolean':
-                                newCell = new JSimpleSpreadsheetCellBoolean(element, cellName, cellNameFull, cellColumn, cellRow, cellOriginalName);
+                                jssCellClass = JSimpleSpreadsheetCellBoolean;
                                 break;
                             case 'richtext':
-                                newCell = new JSimpleSpreadsheetCellRichText(element, cellName, cellNameFull, cellColumn, cellRow, cellOriginalName);
+                                jssCellClass = JSimpleSpreadsheetCellRichText;
                                 break;
                             case 'number':
-                                newCell = new JSimpleSpreadsheetCellNumber(element, cellName, cellNameFull, cellColumn, cellRow, cellOriginalName);
+                                jssCellClass = JSimpleSpreadsheetCellNumber;
                                 break;
                             default:
-                                newCell = new JSimpleSpreadsheetCell(element, cellName, cellNameFull, cellColumn, cellRow, cellOriginalName);
+                                jssCellClass = JSimpleSpreadsheetCell;
                         }
+                        newCell = new jssCellClass(element, cellName, cellNameFull, cellColumn, cellRow, cellOriginalName);  
+                        newCell.addJSSEventListener(this, 'keydown', this.cellKeyboardEvent);
+                        newCell.addJSSEventListener(this, 'change', this.cellChangeEvent);
+                        newCell.addJSSEventListener(this, 'focus', this.cellFocusEvent);
+                        newCell.addJSSEventListener(this, 'blur', this.cellBlurEvent);
                         this.cells[cellName] = newCell;
-                        this.cells[cellName].addJSSEventListener(this, 'keydown', this.cellKeyboardEvent);
-                        this.cells[cellName].addJSSEventListener(this, 'change', this.cellChangeEvent);
-                        this.cells[cellName].addJSSEventListener(this, 'focus', this.cellFocusEvent);
-                        this.cells[cellName].addJSSEventListener(this, 'blur', this.cellBlurEvent);
                     }
                     cellColumn++;
                     break;
