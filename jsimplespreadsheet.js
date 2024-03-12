@@ -1,5 +1,5 @@
 /**
- * JSimpleSpreadsheet 4.0.0
+ * JSimpleSpreadsheet 4.0.3
  * @author Tiago Donizetti Gomes (https://github.com/TiagoDGomes/jSimpleSpreadsheet)
  *  
  * This program is free software: you can redistribute it and/or modify
