@@ -1,5 +1,5 @@
 /**
- * JSimpleSpreadsheet 3.2.3
+ * JSimpleSpreadsheet 4.0.0
  * @author Tiago Donizetti Gomes (https://github.com/TiagoDGomes/jSimpleSpreadsheet)
  *  
  * This program is free software: you can redistribute it and/or modify
@@ -16,505 +16,470 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-var JSimpleSpreadsheet;
-var JSimpleSpreadsheetCell;
 
-(function($) {
-    JSimpleSpreadsheet = function(tableSelector, options) {
-        this._undoList = [];
-        this.colLength = 0;
-        this.rowLength = 0;
-        this.selector = tableSelector;
-        var jssObject = this;
-        this.settings = $.extend({
-            onFocus: function(colName, rowIndex, element) {
-                // nothing
-            },
-            onBlur: function(colName, rowIndex, element) {
-                // nothing
-            },
-            onChange: function(colName, rowIndex, valueRaw, oldValueRaw, element) {
-                return true;
-            },
-            theme: null,
-            trSelector: 'tr',
-            tdSelector: 'td',
-            cellClassSelectorPreffix: 'cell_',
-            focusClassSelector: 'focus',
-            defaultClass: 'jss_default_class'
-
-        }, options);
-
-        $(tableSelector).addClass(this.settings.defaultClass);
+"use strict";
 
 
-        if (jssObject.settings.theme !== null) {
-            jss_includeCSS(jssObject.settings.theme);
+class JSimpleSpreadsheet {
+    cells = {};
+    _colLength = 0;
+    _rowLength = 0;
+
+    constructor(table, props) {
+        this.table = (typeof (table) == 'string') ? document.querySelectorAll(table)[0] : table;
+        this.props = { ...this.props, ...props };
+        if (this.props.theme) {
+            var link = document.createElement("link");
+            link.href = this.props.theme;
+            link.type = "text/css";
+            link.rel = "stylesheet";
+            document.getElementsByTagName("head")[0].appendChild(link);
+            this.table.classList.add(this.props.defaultClass);
         }
+        this._fill(this.table, 0);
+    }
 
-        var colIndex = 1;
-        var rowIndex = 0;
+    props = {
+        onFocus: function (colName, rowIndex, element) {
+            // nothing
+        },
+        onBlur: function (colName, rowIndex, element) {
+            // nothing
+        },
+        onChange: function (colName, rowIndex, valueRaw, oldValueRaw, element) {
+            return true;
+        },
+        tbodySelector: 'tbody',
+        theme: null,
+        trSelector: 'tr',
+        tdSelector: 'td',
+        thSelector: 'th',
+        ignoreThSelector: true,
+        hasColumnHeader: true,
+        hasRowHeader: true,
+        cellClassSelectorPreffix: 'cell_',
+        focusClassSelector: 'focus',
+        defaultClass: 'jss_default_class',
+        navigable: true
+    }
 
-        $(tableSelector + ' ' + jssObject.settings.trSelector).each(function() {
-            $(this).children(jssObject.settings.tdSelector).each(function() {
-                if ($(this).data('ignore') === undefined) {
-                    var jqTRElement = $(this);
-                    jqTRElement.addClass('cell');
-                    var valueRaw = $.trim(jqTRElement.text());
-                    var colName = String.fromCharCode(colIndex + 64);
+    get colLength() {
+        return this._colLength;
+    };
 
-                    var selectorCellName = jssObject.settings.cellClassSelectorPreffix + colName + rowIndex;
-                    var selectorCellName_ = jssObject.settings.cellClassSelectorPreffix + colName + "_" + rowIndex;
-                    var selectorCellIndex = jssObject.settings.cellClassSelectorPreffix + colIndex + '_' + rowIndex;
+    set colLength(value) {
+        this._colLength = value;
+    };
 
-                    this.innerHTML = '';
+    get rowLength() {
+        return this._rowLength;
+    };
 
-                    var dataType = 'string'; // default
-                    var inputItem;
-                    var labelText = document.createElement('label');
-                    var jqInputItem = $(inputItem);
-                    var jqLabelText = $(labelText);
-                    var allowHideOnDisable = false;
-                    switch (jqTRElement.data('type')) {
+    set rowLength(value) {
+        this._rowLength = value;
+    };
 
-                        case 'checkbox':
-                        case 'boolean':
-                            jqLabelText.text(valueRaw);
-                            if (jqTRElement.data('value')==='true'||jqTRElement.data('value')===true){
-                                valueRaw = true;
-                            }else{
-                                valueRaw = false;
-                            }
-                            inputItem = document.createElement('input');
-                            inputItem.type = 'checkbox';
-                            inputItem.checked = jqTRElement.data('value');
-                            if (jqTRElement.data('id')) {
-                                labelText.htmlFor = jqTRElement.data('id');
-                            }
-                            dataType = 'boolean';
-
-                            break;
-                        case 'string':
-                        default:
-                            inputItem = document.createElement('input');
-                            inputItem.value = valueRaw;
-                            inputItem.type = 'text';
-                            allowHideOnDisable = true;
-                            jqLabelText.text(valueRaw);
-
-                    }
-                    inputItem.name = jqTRElement.data('name') !== undefined ? jqTRElement.data('name') : colName + rowIndex + '_' + colName + '_' + rowIndex;
-                    inputItem.className = 'value cell ' +
-                            selectorCellIndex + ' ' +
-                            selectorCellName + ' ' +
-                            selectorCellName_;
-
-                    labelText.className = inputItem.className;
-                    
-                    this.appendChild(inputItem);
-                    this.appendChild(labelText);
-
-                    jqLabelText = $(labelText);  // Refresh jQuery in input
-                    jqInputItem = $(inputItem);  // Refresh jQuery in label
-                    
-                    jqInputItem.data('cellname', colName + rowIndex);
-                    jqInputItem.data('colname', colName);
-                    jqInputItem.data('col', colIndex);
-                    jqInputItem.data('row', rowIndex);
-                    jqInputItem.data('value', valueRaw);
-                    jqInputItem.addClass(inputItem.name.toLowerCase());
-                    jqInputItem.addClass(dataType);
-                    jqInputItem.addClass('jss_input')
-                    jqLabelText.addClass('jss_label')
-                    jqLabelText.data('cellname', colName + rowIndex);
-                    if (jqTRElement.data('id')) {
-                        inputItem.id = jqTRElement.data('id');
-                    }
-                    if (allowHideOnDisable) {
-                        jqInputItem.addClass('allow_hide_on_disable');                    
-                        if (jqTRElement.data('disabled') === undefined) {
-                            jqInputItem.show();
-                            jqLabelText.hide();
-                        } else {
-                            jqInputItem.hide();
-                            jqLabelText.show();
-                        }
-                    }
-
-                    
-                }
-                colIndex++;
-            });
-            rowIndex++;
-            if (colIndex > jssObject.colLength) {
-                jssObject.colLength = colIndex;
+    get tbody() {
+        var tbody;
+        if (this.table.querySelectorAll('*').length == 0) {
+            tbody = document.createElement(this.props.tbodySelector);
+            this.table.appendChild(tbody);
+        } else {
+            tbody = this.table.querySelectorAll(this.props.tbodySelector)[0];
+            if (!tbody) {
+                tbody = this.table;
             }
-            colIndex = 1;
+        }
+        return tbody;
+    }
 
-        });
-        jssObject.rowLength = rowIndex;
+    cellChangeEvent(event) {
+        var element = event.target;
+        var cell = this.getCellByData(element.dataset);
+        var change = this.props.onChange(
+            JSimpleSpreadsheetCell.getColumnNameChar(element.dataset.column),
+            element.dataset.row,
+            cell.value,
+            cell.lastValue,
+            cell);
+        if (!change) {
+            cell.value = cell.lastValue;
+        } else {
+            cell.lastValue = cell.value;
+        }
+    }
 
-        /**
-         * event: focus
-         * 
-         */
+    cellBlurEvent(event) {
+        var element = event.target;
+        var cell = this.getCellByData(element.dataset);
+        this.props.onBlur(JSimpleSpreadsheetCell.getColumnNameChar(element.dataset.column), element.dataset.row, cell);
+    }
 
-        $(tableSelector + ' .jss_input').focus(function() {
-            var jqInputItem = $(this);
-            var colName = jqInputItem.data('colname');
-            var rowIndex = jqInputItem.data('row');
-            jqInputItem.addClass(jssObject.settings.focusClassSelector);
-            jssObject.settings.onFocus(colName, rowIndex, this);
-            jssObject.settings._selected = this;
-            this.select();
-        });
+    cellFocusEvent(event) {
+        var element = event.target;
+        var cell = this.getCellByData(element.dataset);
+        this.props.onFocus(JSimpleSpreadsheetCell.getColumnNameChar(element.dataset.column), element.dataset.row, cell);
+    }
 
-        /**
-         * event: change
-         * 
-         */
-
-        $(tableSelector + ' .jss_input').change(function() {
-            var jqInputItem = $(this);
-            var colName = jqInputItem.data('colname');
-            var rowIndex = jqInputItem.data('row');
-            var oldValueRaw = jqInputItem.data('value');
-            var valueRaw;
-            if (jqInputItem.hasClass('boolean')) {
-                valueRaw = this.checked;
-            } else {
-                valueRaw = this.value;
-            }
-            var ret = jssObject.settings.onChange(colName, rowIndex, valueRaw, oldValueRaw, this);
-            var cell = jssObject.getCell(colName + rowIndex);
-            if (ret === false) {
-                cell.restoreDataValue(colName + rowIndex);
-            } else {
-                cell.setValue(valueRaw);
-            }
-        });
-
-        /**
-         * event: blur
-         * 
-         */
-
-        $(tableSelector + " .jss_input").blur(function() {
-            var jqInputItem = $(this);
-            var colName = jqInputItem.data('colname');
-            var rowIndex = jqInputItem.data('row');
-            jqInputItem.removeClass(jssObject.settings.focusClassSelector);
-            jssObject.settings.onBlur(colName, rowIndex, this);
-
-        });
-
-
-
-        /**
-         * event: keydown
-         */
-
-        $(tableSelector + ' .jss_input').keydown(function(event) {
-            var jqInputItem = $(this);
-            var colIndex = jqInputItem.data('col');
-            var rowIndex = jqInputItem.data('row');
-            var nextCol = colIndex;
-            var nextRow = rowIndex;
-
-            switch (event.which) {
-                case KeyEvent.DOM_VK_RETURN:
-                case KeyEvent.DOM_VK_DOWN:
+    cellKeyboardEvent(event) {
+        var element = event.target;
+        var colIndex = element.dataset.column * 1;
+        var rowIndex = element.dataset.row * 1;
+        var nextCol = colIndex * 1;
+        var nextRow = rowIndex * 1;
+        var confirmNavigate = false;
+        var length;
+        var selectionStart;
+        if (element instanceof HTMLInputElement) {
+            length = element.value.length;
+            selectionStart = element.selectionStart;
+        } else {
+            selectionStart = window.getSelection().getRangeAt(0).endOffset;
+            length = element.innerText.length;
+        }
+        switch (event.which) {
+            case KeyEvent.DOM_VK_RETURN:
+            case KeyEvent.DOM_VK_DOWN:
+                event.preventDefault();
+                nextRow++;
+                confirmNavigate = true;
+                break;
+            case KeyEvent.DOM_VK_UP:
+                event.preventDefault();
+                nextRow--;
+                confirmNavigate = true;
+                break;
+            case KeyEvent.DOM_VK_RIGHT:
+                if (length === selectionStart) {
                     event.preventDefault();
-                    nextRow++;
-                    break;
-                case KeyEvent.DOM_VK_UP:
-                    event.preventDefault();
-                    nextRow--;
-                    break;
-                case KeyEvent.DOM_VK_RIGHT:
-                    if (this.value.length === _jss_getPosition(this)) {
-                        event.preventDefault();
-                        nextCol++;
-                    }
-                    break;
-                case KeyEvent.DOM_VK_LEFT:
-                    if (_jss_getPosition(this) === 0) {
-                        event.preventDefault();
-                        nextCol--;
-                    }
-                    break;
-            }
-            if (nextCol !== colIndex || nextRow !== rowIndex) {
-                if (nextCol > 0 && nextRow > 0 && nextCol <= jssObject.colLength && nextRow <= jssObject.rowLength) {
-                    var cellName = String.fromCharCode(nextCol * 1 + 64) + nextRow;
-                    var cell = jssObject.getCell(cellName);
-                    cell.setSelected(true);
+                    nextCol++;
+                    confirmNavigate = true;
                 }
-            }
+                break;
+            case KeyEvent.DOM_VK_LEFT:
+                if (selectionStart === 0) {
+                    event.preventDefault();
+                    nextCol--;
+                    confirmNavigate = true;
+                }
+                break;
+        }
+        if (confirmNavigate) {
+            var cellToMove = this.getCellByIndex(nextCol, nextRow);
+            if (cellToMove) cellToMove.setSelected(true);
+        }
+    }
 
-        });
-        /**
-         * 
-         * @param {String} cellName
-         * @returns {_L25.JSimpleSpreadsheetCell}
-         */
-        this.getCell = function(cellName) {
-            var cell = new JSimpleSpreadsheetCell(jssObject, cellName);
-            return cell;
-        };
-        /**
-         * 
-         * @returns {Number|_L25.JSimpleSpreadsheet._undoList.length}
-         */
-        this.undo = function() {
-            if (jssObject._undoList.length > 0) {
-                var cellItem = jssObject._undoList.pop();
-                var cellName = cellItem[1];
-                var cellValue = cellItem[2];
-
-                var jqInputItem = jssObject.getCell(cellName).getInputItem();
-                var jqTextLabel = jssObject.getCell(cellName).getLabelText();
-                switch(true){
-                    case jqInputItem.hasClass('boolean'):
-                        jqInputItem.prop('checked', cellValue);
+    _fill(elements, cellRow) {
+        var cellColumn = 1;
+        for (let element of elements.children) {
+            switch (element.localName) {
+                case this.props.tbodySelector:
+                    this._fill(element, cellRow);
+                    break;
+                case this.props.trSelector:
+                    if (element.querySelectorAll(this.props.tdSelector).length > 0 || !this.props.ignoreThSelector) {
+                        this._fill(element, ++cellRow);
+                        this.rowLength = cellRow > this.rowLength ? cellRow : this.rowLength;
+                    }
+                    break;
+                case this.props.thSelector:
+                    if (this.props.ignoreThSelector) {
                         break;
-                    default:
-                        jqInputItem.val(cellValue);
-                        jqTextLabel.text(jqInputItem.val());
-                }
-                jqInputItem.data('value', cellValue);                
-                return jssObject._undoList.length;
-            } else {
-                return 0;
+                    }
+                case this.props.tdSelector:
+                    var cellOriginalName = JSimpleSpreadsheetCell.getCellNameByIndex(cellColumn, cellRow);
+                    var cellName = element.dataset.name ? element.dataset.name : cellOriginalName;
+                    if (element.dataset.cell == undefined) {
+                        var cellNameFull = this.props.cellClassSelectorPreffix + cellName;
+                        var newCell;
+                        switch (element.dataset.type) {
+                            case 'boolean':
+                                newCell = new JSimpleSpreadsheetCellBoolean(element, cellName, cellNameFull, cellColumn, cellRow, cellOriginalName);
+                                break;
+                            case 'richtext':
+                                newCell = new JSimpleSpreadsheetCellRichText(element, cellName, cellNameFull, cellColumn, cellRow, cellOriginalName);
+                                break;
+                            case 'number':
+                                newCell = new JSimpleSpreadsheetCellNumber(element, cellName, cellNameFull, cellColumn, cellRow, cellOriginalName);
+                                break;
+                            default:
+                                newCell = new JSimpleSpreadsheetCell(element, cellName, cellNameFull, cellColumn, cellRow, cellOriginalName);
+                        }
+                        this.cells[cellName] = newCell;
+                        this.cells[cellName].addJSSEventListener(this, 'keydown', this.cellKeyboardEvent);
+                        this.cells[cellName].addJSSEventListener(this, 'change', this.cellChangeEvent);
+                        this.cells[cellName].addJSSEventListener(this, 'focus', this.cellFocusEvent);
+                        this.cells[cellName].addJSSEventListener(this, 'blur', this.cellBlurEvent);
+                    }
+                    cellColumn++;
+                    break;
             }
-        };
-
-    };
-
-    JSimpleSpreadsheetCell = function(jssObject, cellName) {
-        var thisCell = this;
-        /**
-         * 
-         * @returns {String}
-         */
-        this.getCellSelector = function(tag) {
-            var cellSelector = '';
-            var comma = '';
-            var cells;
-            if (!(cellName instanceof  Array)) {
-                cellName = cellName.split(',');
-            }
-            cells = cellName;
-            for (c in cells) {
-                cellSelector = cellSelector.concat(comma, jssObject.selector, ' ', tag, '.', jssObject.settings.cellClassSelectorPreffix, cells[c].toUpperCase());
-                comma = ',';
-                cellSelector = cellSelector.concat(comma, jssObject.selector, ' ', tag, '.', jssObject.settings.cellClassSelectorPreffix, cells[c].toLowerCase());
-                cellSelector = cellSelector.concat(comma, jssObject.selector, ' ', tag, '.', cells[c]);
-            }
-            return cellSelector;
         }
-        /**
-         * 
-         * @returns {String}
-         */
-        this.getInputSelector = function() {
-            return thisCell.getCellSelector('.jss_input');
-        };
-
-        /**
-         * 
-         * @returns {String}
-         */
-        this.getLabelSelector = function() {
-            return thisCell.getCellSelector('.jss_label');
-        };
-
-
-        /**
-         * 
-         * @returns {jQuery}
-         */
-        this.getInputItem = function() {
-            return $(thisCell.getInputSelector());
-        };
-
-        /**
-         * 
-         * @returns {jQuery}
-         */
-        this.getLabelText = function() {
-            return  $(thisCell.getLabelSelector());
-        };
-
-        /**
-         * 
-         * @returns {String}
-         */
-        this.getColName = function() {
-            return this.getInputItem().data('colname');
-        };
-
-        /**
-         * 
-         * @returns {Number}
-         */
-        this.getRowIndex = function() {
-            return thisCell.getInputItem().data('row');
-        };
-        /**
-         * 
-         * @returns {String}
-         */
-        this.getValue = function() {
-            var jqInputItem = thisCell.getInputItem();
-            if (jqInputItem.length > 1) {
-                var ret = [];
-                jqInputItem.each(function() {
-                    if ($(this).hasClass('boolean')) {
-                        ret.push(this.checked);
-                    } else {
-                        ret.push(this.value);
-                    }
-                });
-                return ret;
-            } else if (jqInputItem.length === 1) {
-                if (jqInputItem.hasClass('boolean')) {
-                    return thisCell.getInputItem().prop('checked');
-                } else {
-                    return thisCell.getInputItem().val();
-                }
-
-            }
-        };
-
-        /**
-         * 
-         * 
-         */
-        this.setValue = function(cellValue) {
-            var jqInputItem = thisCell.getInputItem();
-            cellValue = typeof cellValue === 'undefined' ? '' : cellValue;
-            
-            if (jqInputItem.hasClass('boolean')) {
-                jqInputItem.prop('checked',cellValue);
-                
-            } else {
-                jqInputItem.val(cellValue);
-                thisCell.getLabelText().text(jqInputItem.val());
-            }
-            jssObject._undoList.push([jssObject.selector, cellName, jqInputItem.data('value')]);
-            jqInputItem.data('value', cellValue);
-            return cellValue;
-        };
-        /**
-         * 
-         * @returns {String}
-         */
-        this.isEnabled = function() {
-            return thisCell.getInputItem().prop('disabled') === undefined;
-        };
-        this.setEnabled = function(enable, dontForce) {
-            var jqInputItem = thisCell.getInputItem();
-            var jqTextLabel = thisCell.getLabelText();
-            if (jqInputItem.hasClass('allow_hide_on_disable')) {
-                jqInputItem.show();
-                jqTextLabel.show();
-                if (enable) {
-                    jqTextLabel.hide();
-                } else {
-                    if (dontForce === undefined || dontForce === true) {
-                        jqInputItem.hide();
-                    } else {
-                        jqTextLabel.hide();
-                    }
-                }
-            }
-            jqInputItem.prop('disabled', !enable);
-            return enable;
-        };
-        /**
-         * 
-         * @returns {Boolean}
-         */
-        this.isSelected = function() {
-            return thisCell.getInputItem().hasClass(jssObject.settings.focusClassSelector);
-        };
-
-        /**
-         * 
-         * @returns {String}
-         */
-        this.setSelected = function(select) {
-            if (select) {
-                thisCell.getInputItem().focus();
-            } else {
-                thisCell.getInputItem().blur();
-            }
-        };
-
-        /**
-         * 
-         * @returns {String}
-         */
-        this.restoreDataValue = function() {
-            var jqInputItem = thisCell.getInputItem();
-            var dataValue = jqInputItem.data('value');
-            if (jqInputItem.hasClass('boolean')){
-                jqInputItem.prop('checked' , dataValue);                         
-            } else {
-                jqInputItem.val(dataValue);
-                thisCell.getLabelText().text(dataValue);   
-            }
-            return dataValue;
-        };
-    };
-}(jQuery));
-
-/**
- * _jss_getPosition
- * Returns the caret (cursor) position of the specified text field.
- * Return value range is 0-oField.value.length.
- * Original method: doGetCaretPosition
- * https://stackoverflow.com/questions/2897155/get-cursor-position-in-characters-within-a-text-input-field
- * @param {obj} oField
- */
-function _jss_getPosition(oField) {
-    // Initialize
-    var iCaretPos = 0;
-    // IE Support
-    if (document.selection) {
-        // Set focus on the element
-        oField.focus();
-        // To get cursor position, get empty selection range
-        var oSel = document.selection.createRange();
-        // Move selection start to 0 position
-        oSel.moveStart('character', -oField.value.length);
-        // The caret position is selection length
-        iCaretPos = oSel.text.length;
+        if (cellColumn > this.colLength) {
+            this.colLength = cellColumn;
+        }
+        if (cellRow > this.colLength) {
+            this.rowLength = cellRow;
+        }
     }
-    // Firefox support
-    else if (oField.selectionStart || oField.selectionStart === '0') {
-        iCaretPos = oField.selectionStart;
+
+    getCell(item) {
+        var self = this;
+        if (typeof (item) == 'string') {
+            var itemName = item;
+            if (this.cells[itemName]) {
+                return this.cells[itemName];
+            }
+            var cells = Object.entries(self.cells);
+            var cellReturn = Object.entries(cells).filter(([key, cell]) => {
+                var cellItem = cell[1];
+                if (cellItem.cellOriginalName === item) {
+                    return cellItem;
+                }
+            });
+            try {
+                return cellReturn[0][1][1];
+            } catch (e) {
+                return null;
+            }
+        } else if (Array.isArray(item)) {
+            var items = item;
+            var resultFilter = items.map((cell) => {
+                return self.cells[cell];
+            });
+            return new JSimpleSpreadsheetMultipleCells(resultFilter);
+        }
     }
-    // Return results
-    return (iCaretPos);
+
+    getCellByIndex(col, row) {
+        return this.getCell(JSimpleSpreadsheetCell.getCellNameByIndex(col, row));
+    }
+
+    getCellByData(dataset) {
+        var cellName = JSimpleSpreadsheetCell.getCellNameByIndex(dataset.column, dataset.row);
+        return this.getCell(cellName);
+    }
+
+    addRow() {
+        var newRow = document.createElement(this.props.trSelector);
+        var tbody = this.tbody;
+        tbody.appendChild(newRow);
+        if (this.props.hasRowHeader) {
+            var th = document.createElement(this.props.thSelector);
+            th.innerHTML = this.rowLength + 1;
+            newRow.appendChild(th);
+        }
+        for (var col = 1; col < this.colLength; col++) {
+            var td = document.createElement(this.props.tdSelector);
+            newRow.appendChild(td);
+        }
+        this._fill(tbody, 0);
+    }
+
+    addColumn() {
+        var trLines = this.table.querySelectorAll(this.props.trSelector);
+        var hitHeader = false;
+        var rowIndex = 0;
+        trLines.forEach((tr) => {
+            if (this.props.hasColumnHeader && !hitHeader) {
+                var th = document.createElement(this.props.thSelector);
+                th.innerHTML = String.fromCharCode(64 + this.colLength);
+                tr.appendChild(th);
+                hitHeader = true;
+            } else {
+                var td = document.createElement(this.props.tdSelector);
+                tr.appendChild(td);
+                this._fill(tr, ++rowIndex);
+            }
+
+        });
+    }
 }
 
 
-
-
-function jss_includeCSS(css, media) {
-    var link = document.createElement("link");
-    link.href = css;
-    link.type = "text/css";
-    link.rel = "stylesheet";
-    if (media !== undefined) {
-        link.media = media;
+class JSimpleSpreadsheetValuable {
+    set value(v) {
+        this.setValue(v)
     }
-    document.getElementsByTagName("head")[0].appendChild(link);
+    get value() {
+        return this.getValue();
+    }
+    set enabled(v) {
+        this.setEnabled(v)
+    }
+    get enabled() {
+        return this.getEnabled();
+    }
 }
 
-// IE Support:
+
+class JSimpleSpreadsheetCell extends JSimpleSpreadsheetValuable {
+    constructor(tdElement, cellName, cellNameFull, cellColumn, cellRow, cellOriginalName) {
+        super(tdElement, cellName, cellNameFull);
+        this.cellName = cellName;
+        this.cellOriginalName = cellOriginalName;
+        this.cellNameFull = cellNameFull;
+        this.column = cellColumn;
+        this.line = cellRow;
+        this.tdElement = tdElement;
+        if (tdElement.dataset.ignore === undefined) {
+            tdElement.getValue = function () {
+                return this.innerText;
+            }
+            tdElement.dataset.cell = cellName;
+            tdElement.classList.add(cellNameFull);
+            this.originalContentHTML = tdElement.innerHTML;
+            this.lastValue = tdElement.innerText;
+            tdElement.innerText = '';
+            this.cellInput = document.createElement('input');
+            this.cellInput.value = this.originalContentHTML;
+            this.cellInput.type = 'hidden';
+            this.cellInput.name = cellNameFull;
+            this.cellInput.id = cellNameFull;
+            this.baseElementUI = this.cellInput;
+            tdElement.appendChild(this.cellInput);
+            this._fill();
+            this.baseElementUI.classList.add('cell');
+            this.baseElementUI.dataset.column = this.column;
+            this.baseElementUI.dataset.row = this.line;
+            this.setEnabled(tdElement.dataset.disabled === undefined);
+        }
+    }
+
+    static getColumnNameChar(colNumber) {
+        return String.fromCharCode(colNumber * 1 + 64);
+    }
+
+    static getCellNameByIndex(col, row) {
+        return JSimpleSpreadsheetCell.getColumnNameChar(col) + (row * 1);
+    }
+
+    addJSSEventListener(jss, eventName, callback) {
+        if (this.baseElementUI) {
+            this.baseElementUI.addEventListener(eventName,
+                function (event) {
+                    switch (eventName) {
+                        case 'change':
+                            jss.cellChangeEvent(event);
+                            break;
+                        case 'focus':
+                            jss.cellFocusEvent(event);
+                            break;
+                        case 'blur':
+                            jss.cellBlurEvent(event);
+                            break;
+                        default:
+                            jss.cellKeyboardEvent(event);
+                    }
+                }
+                , false);
+        }
+    }
+
+    _fill() {
+        this.cellInput.type = 'text';
+    }
+
+    setValue(value) {
+        this.cellInput.value = value;
+        this.lastValue = value;
+    }
+
+    getValue() {
+        return this.cellInput.value;
+    }
+
+    setEnabled(value) {
+        this.cellInput.disabled = !value;
+        if (value) {
+            this.cellInput.removeAttribute('data-disabled');
+        } else {
+            this.cellInput.dataset.disabled = 'true';
+        }
+    }
+
+    setSelected(value) {
+        this.baseElementUI.focus();
+    }
+
+}
+
+
+class JSimpleSpreadsheetCellNumber extends JSimpleSpreadsheetCell {
+    _fill() {
+        this.cellInput.type = 'number';
+    }
+}
+
+
+class JSimpleSpreadsheetCellBoolean extends JSimpleSpreadsheetCell {
+    _fill() {
+        if (this.originalContentHTML !== '') {
+            this.label = document.createElement('label');
+            this.label.htmlFor = this.cellInput.id;
+            this.label.innerHTML = this.originalContentHTML;
+            this.tdElement.appendChild(this.label);
+        }
+        this.cellInput.type = 'checkbox';
+        this.lastValue = this.baseElementUI.checked;
+    }
+    getValue() {
+        return this.baseElementUI.checked;
+    }
+    setValue(value) {
+        this.baseElementUI.checked = value ? true : false;
+    }
+}
+
+
+class JSimpleSpreadsheetCellRichText extends JSimpleSpreadsheetCell {
+    _fill() {
+        this.cellRichText = document.createElement('div');
+        this.cellRichText.innerHTML = this.originalContentHTML;
+        this.cellRichText.contentEditable = 'true';
+        var self = this;
+        // TO-DO: replace setInterval -> MutationObserver (?)
+        setInterval(function () {
+            if (self.cellRichText.innerHTML !== self.cellInput.value) {
+                self.cellInput.value = self.cellRichText.innerHTML;
+            }
+        }, 500);
+        this.tdElement.appendChild(this.cellRichText);
+        this.baseElementUI = this.cellRichText;
+    }
+    setValue(value) {
+        this.cellRichText.innerText = (value);
+    }
+    setSelected(value) {
+        this.cellRichText.focus();
+    }
+}
+
+
+class JSimpleSpreadsheetMultipleCells extends JSimpleSpreadsheetValuable {
+    constructor(cells) {
+        super(cells);
+        this.cells = cells;
+    }
+    setValue(value) {
+        this.cells.forEach(cell => {
+            cell.setValue(value);
+        })
+    }
+    setEnabled(value) {
+        this.cells.forEach(cell => {
+            cell.setEnabled(value);
+        })
+    }
+    getValue() {
+        return this.cells.map(cell => {
+            return cell.getValue();
+        })
+    }
+}
+
+
 if (typeof KeyEvent === "undefined") {
     var KeyEvent = {
         DOM_VK_CANCEL: 3,
@@ -541,4 +506,3 @@ if (typeof KeyEvent === "undefined") {
         DOM_VK_DELETE: 46
     };
 }
-

@@ -1,10 +1,10 @@
 # JSimpleSpreadsheet
      
 (en)
-Simple, easy and uncomplicated. Your HTML tables are navigable and editable (like a spreadsheet). [View example](https://tiagodgomes.github.io/JSimpleSpreadsheet/example3.html).
+Simple, easy and uncomplicated. Your HTML tables are navigable and editable (like a spreadsheet). [View example](https://tiagodgomes.github.io/JSimpleSpreadsheet/example4.html).
 
 (pt)
-Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáveis (como uma planilha). [Veja o exemplo](https://tiagodgomes.github.io/JSimpleSpreadsheet/example3.html).
+Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáveis (como uma planilha). [Veja o exemplo](https://tiagodgomes.github.io/JSimpleSpreadsheet/example4.html).
 
 
 
@@ -13,16 +13,7 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
 ```html
 <html>
 <head>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-  <link href="jsimplespreadsheet.css" rel="stylesheet" type="text/css">
-  <script src="jsimplespreadsheet.js"></script>
-  <script>
-     var worksheet;
-     $(document).ready(function(){
-          var your_table_selector = '.this-is-a-example';
-          worksheet = new JSimpleSpreadsheet(your_table_selector);
-     });
-  </script>
+  <script src="jsimplespreadsheet.js"></script>  
 </head>
 <body>
   <table class="this-is-a-example">
@@ -30,6 +21,9 @@ Simples, fácil e descomplicado. Suas tabelas HTML serão navegáveis e editáve
      <tr><th>1</th><th>banana</th><th>apple</th></tr>
      <tr><th>2</th><th>orange</th><th>grape</th></tr>         
   </table>
+  <script>
+     var worksheet = new JSimpleSpreadsheet(your_table_selector);
+  </script>
 </body>
 </html>
 ```
@@ -102,9 +96,13 @@ worksheet.getCell('A3').setEnabled(false, false);
 // Checking C1 if enabled
 var my_check = worksheet.getCell('C1').isEnabled();
 
-// Undo
-worksheet.getCell('B5').setValue('Undo test');
-worksheet.undo();
+// Add column
+worksheet.addColumn();
+
+// Add row
+worksheet.addRow();
+
+
 
 // ---------
 //   TO-DO: 
@@ -173,6 +171,13 @@ worksheet.undo();
 ## Releases:
 
 ``` 
+* v4.0.0
+      - Pure vanilla javascript (removed jQuery dependency)
+      - Removed legacy code
+      - Added: addRow() e addColumn() 
+      - Removed: jsimplespreadsheet.css     
+* v3.2.3
+      - Final release 3
 * v3.2.2
       - allowHideOnDisable changes
 * v3.2.1

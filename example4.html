@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html>  
+    <head>  
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">  
+        <title>JSimpleSpreadsheet Example</title>         
+        <script src="jsimplespreadsheet.js"></script>
+        <script>
+            var worksheet;
+        </script>
+
+
+    </head>  
+    <body>       
+        <h1>JSimpleSpreadsheet Example</h1>
+
+
+        <h2>Test with existing table</h2>
+
+        <table border="1" class="my-spreadsheet">    
+            <thead>
+                <tr>
+                    <th>&nbsp;</th><th>A</th><th>B</th><th>C</th><th>D</th>
+                </tr>
+            </thead>                
+            <tbody>
+                <tr>                                                         
+                    <th>1</th><td></td><td></td><td></td> <td></td>                        
+                </tr>                                            
+                <tr>                                                         
+                    <th>2</th><td></td><td></td><td data-disabled>disabled cell in HTML code</td>   <td></td>                       
+                </tr>                                            
+                <tr>                                                         
+                    <th>3</th><td data-type="boolean" data-id="teste_id" data-value="true">This is a label for boolean field</td><td>Hey!!!</td><td></td><td></td>  
+                </tr>                                            
+                <tr>                                                         
+                    <th>4</th><td><b>Bold?</b></td><td data-type="richtext"><b>Bold!</b><td data-type="richtext">Wow!</td></td><td></td>                      
+                </tr>                                            
+                <tr>                                                         
+                    <th>5</th><td></td><td data-ignore><b><strong>Ignore this cell</strong></td><td></td><td></td>                        
+                </tr>                                        
+                <tr>                                                                                                                  
+                    <th>6</th><td data-type="number">1</td><td></td><td></td><td></td>                       
+                </tr> 
+                <tr>                                                                                                                  
+                    <th>7</th><td data-type="boolean" data-id="teste_id" data-value="true"></td><td></td><td data-type="number" data-name="total"></td><td></td>                       
+                </tr>   
+            </tbody>
+        </table> 
+        <p>
+            <button onclick="try {eval(document.getElementById('code').innerHTML);} catch (err) {alert('Hey!\n' + err)};this.disabled=true;">Execute</button>        
+            <button onclick="eval(document.getElementById('code').innerHTML);this.disabled=true;">Execute (debug console)</button>        
+   
+        </p>
+        <textarea id="code" rows="20" cols="100">
+// Example (click 'Execute')
+worksheet = new JSimpleSpreadsheet('.my-spreadsheet', {					
+    onFocus: function(colName, rowIndex, cell){
+        console.log('onFocus code ' + colName + rowIndex);
+    },
+    onBlur: function(colName, rowIndex, cell){						
+        console.log('onBlur code ' + colName + rowIndex);
+    },
+    onChange: function(colName, rowIndex, valueRaw, oldValueRaw, cell){					
+            console.log('onChange code ' + colName + rowIndex);
+            if (confirm('[trigger onChange]: Accept ' + colName + rowIndex + ' with ' + valueRaw + '?')){
+            return true;
+            } else {
+            return false;  // Undo changes
+            }
+        
+    },
+    theme: 'jsimplespreadsheet.theme.css' 
+});
+worksheet.getCell('A1').setValue('This is A1');
+worksheet.getCell(['C1','C3']).setValue('Both C1 and C3 setValue');
+worksheet.getCell('A5').setValue('B4 setValue');
+worksheet.getCell('C4').setValue('<b>Bold</b>');
+console.log(worksheet.getCell('A1').getValue());
+console.log(worksheet.getCell(['A1','C3']).getValue()); 
+var c3 = worksheet.getCell('C3');
+
+console.log(c3.value);
+console.log(worksheet.getCell(['A4','A6']).value); 
+worksheet.getCell(['B1','B2']).value = 'hi!'; 
+
+worksheet.getCell(['C1','B6']).setValue('disabling...');
+worksheet.getCell(['C1','B6']).setEnabled(false);
+
+
+worksheet.getCell('total').setValue('1000');      
+console.log(worksheet.getCell('total').getValue()); 
+
+worksheet.addRow();	
+worksheet.addColumn();
+
+console.log(worksheet);
+	                         
+                    </textarea>
+
+        <address>
+            <p>
+                Copyleft 2024 Tiago Donizett Gomes (<a href="https://github.com/TiagoDGomes/jSimpleSpreadsheet">https://github.com/TiagoDGomes/jSimpleSpreadsheet</a>)
+            </p>
+        </address>
+    </body>
+</html>
