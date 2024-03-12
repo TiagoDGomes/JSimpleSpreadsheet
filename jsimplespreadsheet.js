@@ -284,7 +284,7 @@ class JSimpleSpreadsheet {
         trLines.forEach((tr) => {
             if (this.props.hasColumnHeader && !hitHeader) {
                 var th = document.createElement(this.props.thSelector);
-                th.innerHTML = String.fromCharCode(64 + this.colLength);
+                th.innerHTML = JSimpleSpreadsheetCell.getColumnNameChar(this.colLength);
                 tr.appendChild(th);
                 hitHeader = true;
             } else {
@@ -348,7 +348,15 @@ class JSimpleSpreadsheetCell extends JSimpleSpreadsheetValuable {
     }
 
     static getColumnNameChar(colNumber) {
-        return String.fromCharCode(colNumber * 1 + 64);
+        var numChar;
+        colNumber = colNumber * 1;
+        if (colNumber <= 26) {
+            return String.fromCharCode(colNumber + 64);
+        } else {
+            var n1 = Math.floor((colNumber - 1) / 26);
+            var n2 = ((colNumber - 1) % 26);
+            return String.fromCharCode(n1 + 64) + String.fromCharCode(n2 + 65) ;
+        } 
     }
 
     static getCellNameByIndex(col, row) {

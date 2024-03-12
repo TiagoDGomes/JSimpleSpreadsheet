@@ -171,6 +171,8 @@ worksheet.addRow();
 ## Releases:
 
 ``` 
+* v4.0.1
+      - Fix column name
 * v4.0.0
       - Pure vanilla javascript (removed jQuery dependency)
       - Removed legacy code
