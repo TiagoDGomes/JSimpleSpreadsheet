@@ -157,20 +157,21 @@ worksheet.addRow();
           <td data-name="total">The input will be named 'total'</td>
           <td></td>                     
       </tr>
-      <!-- TO-DO (not implemented) -->
-      <!-- <tr>
+
+      <tr>
           <th>7</th>
           <td data-type="number">0</td>
-          <td data-type="postal-code"></td>
+          <td data-type="calendar"></td>
           <td data-type="select" data-options="[{'a':'apple'},{'b':'banana'}]"></td>                      
-      </tr>-->
-      <!--         end TO-DO            -->
+      </tr>
   </tbody>
 </table> 
 ``` 
 ## Releases:
 
 ``` 
+* v4.0.3
+      - Added: calendar
 * v4.0.2
       - Clean code: jssCellClass
 * v4.0.1

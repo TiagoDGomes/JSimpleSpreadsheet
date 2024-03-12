@@ -203,6 +203,9 @@ class JSimpleSpreadsheet {
                                 break;
                             case 'number':
                                 jssCellClass = JSimpleSpreadsheetCellNumber;
+                                break;                            
+                            case 'calendar':
+                                jssCellClass = JSimpleSpreadsheetCellCalendar;
                                 break;
                             default:
                                 jssCellClass = JSimpleSpreadsheetCell;
@@ -419,6 +422,12 @@ class JSimpleSpreadsheetCell extends JSimpleSpreadsheetValuable {
 class JSimpleSpreadsheetCellNumber extends JSimpleSpreadsheetCell {
     _fill() {
         this.cellInput.type = 'number';
+    }
+}
+
+class JSimpleSpreadsheetCellCalendar extends JSimpleSpreadsheetCell {
+    _fill() {
+        this.cellInput.type = 'date';
     }
 }
 
