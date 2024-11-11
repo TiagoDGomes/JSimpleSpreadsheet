@@ -22,6 +22,11 @@
     border: 1px solid #aeaeae;
     background-color: #fefefe;
 }
+@media (prefers-color-scheme: dark) {
+    .jss_default_class td:hover {
+        background-color: transparent;
+    } 
+}
 
 
 .jss_default_class,
