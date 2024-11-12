@@ -47,7 +47,7 @@
 }
 
 .jss_default_class th {
-    background-color: #dedede;
+    background-color: threedface;
 }
 
 .jss_default_class td:has(.cell:focus) {
